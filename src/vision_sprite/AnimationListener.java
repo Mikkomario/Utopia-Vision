@@ -1,24 +1,24 @@
 package vision_sprite;
 
-import genesis_logic.LogicalHandled;
+import genesis_event.Handled;
 
 /**
  * Animationlistener is informed when an animation cycle ends.<br>
  * Remember to add the object into an AnimationListenerHandler
  *
  * @author Mikko Hilpinen.
- *         Created 28.8.2013.
+ * @since 28.8.2013.
  * @see AnimationListenerHandler
  * @see SpriteDrawer
  */
-public interface AnimationListener extends LogicalHandled
+public interface AnimationListener extends Handled
 {
 	/**
 	 * This method is called when an animation of the sprite ends or, more 
 	 * precisely, a cycle in the animation ends.
 	 *
-	 * @param spritedrawer The spritedrawer that draws the sprite who's 
-	 * animation just completed a cycle. 
+	 * @param source The spriteDrawer that draws the sprite who's 
+	 * animation just completed a cycle.
 	 */
-	public void onAnimationEnd(SpriteDrawer spritedrawer);
+	public void onAnimationEnd(SpriteDrawer source);
 }

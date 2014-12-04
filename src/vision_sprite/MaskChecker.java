@@ -1,16 +1,17 @@
 package vision_sprite;
 
-import java.awt.geom.Point2D;
-import java.util.ArrayList;
+import genesis_util.HelpMath;
+import genesis_util.Vector2D;
 
-import omega_gameplay.HelpMath;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Maskcheckker is uselful for objects that want to use masks in collision 
  * detection. Maskcheckker provides most of the tools needed for that.
  *
  * @author Mikko Hilpinen.
- *         Created 2.7.2013.
+ * @since 2.7.2013.
  */
 public class MaskChecker
 {
@@ -66,15 +67,15 @@ public class MaskChecker
 	 * needs to contain the relative point)
 	 * @return The refined relative collisionpoints
 	 */
-	public Point2D.Double[] getRefinedRelativeCollisionPoints(
-			Point2D.Double[] collisionpoints, int maskindex)
+	public Vector2D[] getRefinedRelativeCollisionPoints(
+			Vector2D[] collisionpoints, int maskindex)
 	{
 		// In case the mask is null (= not used), simply returns the same points
 		if (getMask() == null)
 			return collisionpoints;
 		
 		// Removes the collisionpoints that aren't in the mask
-		ArrayList<Point2D.Double> templist = new ArrayList<Point2D.Double>();
+		List<Vector2D> templist = new ArrayList<Vector2D>();
 		// Adds all the relevant points to the list
 		for (int i = 0; i < collisionpoints.length; i++)
 		{
@@ -82,7 +83,7 @@ public class MaskChecker
 				templist.add(collisionpoints[i]);
 		}
 		// Adds all points from the list to the table
-		Point2D.Double[] newpoints = new Point2D.Double[templist.size()];
+		Vector2D[] newpoints = new Vector2D[templist.size()];
 		for (int i = 0; i < templist.size(); i++)
 		{
 			newpoints[i] = templist.get(i);
@@ -99,7 +100,7 @@ public class MaskChecker
 	 * contains the point)
 	 * @return Does the mask contain the given point
 	 */
-	public boolean maskContainsRelativePoint(Point2D.Double relativep, int maskindex)
+	public boolean maskContainsRelativePoint(Vector2D relativep, int maskindex)
 	{		
 		// In case mask is not used (mask == null), always returns true
 		if (getMask() == null)
@@ -111,14 +112,14 @@ public class MaskChecker
 		
 		// Checks whether the point is within the mask and returns false if 
 		// it isn't
-		if (!HelpMath.pointIsInRange(relativep, 0, getMask().getWidth(), 0, 
-				getMask().getHeight()))
+		if (!HelpMath.pointIsInRange(relativep, Vector2D.zeroVector(), 
+				getMask().getDimensions()))
 			return false;
 
 		if (maskindex >= 0)
 		{
-			int c = this.mask.getSubImage(maskindex).getRGB((int) relativep.x, 
-					(int) relativep.y);
+			int c = this.mask.getSubImage(maskindex).getRGB(relativep.getFirstInt(), 
+					relativep.getSecondInt());
 			return c == maskcolor;
 		}
 		// If maskindex was negative has to check each subimage
@@ -126,8 +127,8 @@ public class MaskChecker
 		{
 			for (int i = 0; i < getMask().getImageNumber(); i++)
 			{
-				int c = getMask().getSubImage(i).getRGB((int) relativep.x, 
-						(int) relativep.y);
+				int c = getMask().getSubImage(i).getRGB(relativep.getFirstInt(), 
+						relativep.getSecondInt());
 				if (c == maskcolor)
 					return true;
 			}

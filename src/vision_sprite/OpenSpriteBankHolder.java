@@ -51,7 +51,7 @@ public class OpenSpriteBankHolder extends OpenBankHolder
 	@Override
 	public Resource getHeldResourceType()
 	{
-		return GraphicResource.SPRITE;
+		return GraphicResourceType.SPRITE;
 	}
 	
 	

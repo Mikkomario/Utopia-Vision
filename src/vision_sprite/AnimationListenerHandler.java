@@ -1,17 +1,18 @@
 package vision_sprite;
 
-import genesis_logic.Handled;
-import genesis_logic.LogicalHandler;
+import genesis_event.Handler;
+import genesis_event.HandlerRelay;
+import genesis_event.HandlerType;
 
 /**
  * Animationlistenerhandler informs numerous animationlisteners about animation 
  * events
  *
  * @author Mikko Hilpinen.
- *         Created 28.8.2013.
+ * @since 28.8.2013.
  * @see SpriteDrawer
  */
-public class AnimationListenerHandler extends LogicalHandler implements 
+public class AnimationListenerHandler extends Handler<AnimationListener> implements 
 		AnimationListener
 {
 	// ATTRIBUTES	----------------------------------------------------
@@ -28,24 +29,52 @@ public class AnimationListenerHandler extends LogicalHandler implements
 	 * @param superhandler The animationlistenerhandler that will inform 
 	 * the handler about animation events (optional)
 	 */
-	public AnimationListenerHandler(boolean autodeath,
-			AnimationListenerHandler superhandler)
+	public AnimationListenerHandler(boolean autodeath, AnimationListenerHandler superhandler)
 	{
-		super(autodeath, superhandler);
+		super(autodeath);
 		
-		// Initializes attributes
-		this.lastdrawer = null;
+		if (superhandler != null)
+			superhandler.add(this);
+	}
+	
+	/**
+	 * Creates a new handler
+	 * @param autoDeath Will the handler die once it runs out of handled objects
+	 * @param handlers The handlers that will handle this handler
+	 */
+	public AnimationListenerHandler(boolean autoDeath, HandlerRelay handlers)
+	{
+		super(autoDeath, handlers);
+	}
+	
+	/**
+	 * Creates a new handler
+	 * @param autoDeath Will the handler die once it runs out of handled objects
+	 */
+	public AnimationListenerHandler(boolean autoDeath)
+	{
+		super(autoDeath);
 	}
 	
 	
 	// IMPLEMENTED METHODS	---------------------------------------------
 
 	@Override
-	protected Class<?> getSupportedClass()
+	public HandlerType getHandlerType()
 	{
-		return AnimationListener.class;
+		return VisionHandlerType.ANIMATIONLISTENERHANDLER;
 	}
 
+	@Override
+	protected boolean handleObject(AnimationListener h)
+	{
+		// Informs the onject about the animation event
+		// TODO: Use stateOperators?
+		h.onAnimationEnd(this.lastdrawer);
+		
+		return true;
+	}
+	
 	@Override
 	public void onAnimationEnd(SpriteDrawer spritedrawer)
 	{
@@ -53,30 +82,6 @@ public class AnimationListenerHandler extends LogicalHandler implements
 		this.lastdrawer = spritedrawer;
 		// Informs all listeners about the event
 		handleObjects();
-	}
-	
-	@Override
-	protected boolean handleObject(Handled h)
-	{
-		// Informs active animationlisteners about the event
-		AnimationListener l = (AnimationListener) h;
-		
-		if (l.isActive())
-			l.onAnimationEnd(this.lastdrawer);
-		
-		return true;
-	}
-	
-	
-	// OTHER METHODS	--------------------------------------------------
-	
-	/**
-	 * Adds a new animationlistener to the informed listeners
-	 *
-	 * @param l The animationlistener added
-	 */
-	public void addAnimationListener(AnimationListener l)
-	{
-		addHandled(l);
+		this.lastdrawer = null;
 	}
 }

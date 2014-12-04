@@ -103,7 +103,7 @@ public class OpenSpriteBank extends SpriteBank implements OpenBank
 	 */
 	public static SpriteBank getSpriteBank(String bankname)
 	{
-		OpenBank maybespritebank = MultiMediaHolder.getBank(GraphicResource.SPRITE, bankname);
+		OpenBank maybespritebank = MultiMediaHolder.getBank(GraphicResourceType.SPRITE, bankname);
 		
 		if (maybespritebank instanceof SpriteBank)
 			return (SpriteBank) maybespritebank;
