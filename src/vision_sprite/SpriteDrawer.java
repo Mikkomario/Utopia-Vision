@@ -40,7 +40,7 @@ public abstract class SpriteDrawer extends DependentGameObject<GameObject> imple
 		super(user, handlers);
 		
 		// Initializes the attributes
-		this.listenerhandler = new AnimationListenerHandler(false, null);
+		this.listenerhandler = new AnimationListenerHandler(false);
 		
 		this.imageSpeed = 0.1;
 		this.imageIndex = 0;

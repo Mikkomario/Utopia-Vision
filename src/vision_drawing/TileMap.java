@@ -9,7 +9,7 @@ import java.util.ArrayList;
 
 import omega_gameplay.CollisionType;
 import omega_world.AreaOldVersion;
-import vision_sprite.SpriteBank;
+import vision_sprite.SpriteBankOld;
 
 /**
  * Tilemaps hold a certain number of tiles. Tilemaps can be created using tables 
@@ -234,7 +234,7 @@ public class TileMap extends DimensionalDrawnObject
 	 * in the spritebanks
 	 * @see #clear()
 	 */
-	public void initialize(ArrayList<SpriteBank> banks, 
+	public void initialize(ArrayList<SpriteBankOld> banks, 
 			ArrayList<String> texturenames)
 	{
 		// If the map was already initialized, does nothing
