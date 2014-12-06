@@ -121,7 +121,7 @@ public abstract class AbstractDependentDrawer<T extends Transformable & GameObje
 	@Override
 	public Transformation getTransformation()
 	{
-		return getMaster().getTransformation().plus(this.ownTransformation);
+		return getMaster().getTransformation().plus(getOwnTransformation());
 	}
 
 	@Override
@@ -153,5 +153,14 @@ public abstract class AbstractDependentDrawer<T extends Transformable & GameObje
 			setAlpha(0);
 		if (getAlpha() > 1)
 			setAlpha(1);
+	}
+	
+	/**
+	 * @return This object's independent transformation, the one applied on top of the 
+	 * master object's transformation
+	 */
+	public Transformation getOwnTransformation()
+	{
+		return this.ownTransformation;
 	}
 }

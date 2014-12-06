@@ -39,7 +39,7 @@ public class SpriteBank
 	 * &bankName2<br>
 	 * ...<br>
 	 */
-	public void initializeSpriteResources(String fileName)
+	public static void initializeSpriteResources(String fileName)
 	{
 		MultiMediaHolder.initializeResourceDatabase(createSpriteBankBank(fileName));
 	}
@@ -58,7 +58,7 @@ public class SpriteBank
 	 * 
 	 * @return A new Bank system containing all the introduced banks
 	 */
-	public BankBank<Sprite> createSpriteBankBank(String fileName)
+	public static BankBank<Sprite> createSpriteBankBank(String fileName)
 	{
 		return new BankBank<>(new BankBankInitializer<>(fileName, new SpriteBankConstructor(), 
 				new SpriteConstructor()), GraphicResourceType.SPRITE);
@@ -71,7 +71,7 @@ public class SpriteBank
 	 * @return A spriteBank with the given name
 	 */
 	@SuppressWarnings("unchecked")
-	public Bank<Sprite> getSpriteBank(String bankName)
+	public static Bank<Sprite> getSpriteBank(String bankName)
 	{
 		return (Bank<Sprite>) MultiMediaHolder.getBank(GraphicResourceType.SPRITE, bankName);
 	}
@@ -82,7 +82,7 @@ public class SpriteBank
 	 * @param spriteName The name of the sprite in the bank
 	 * @return A sprite with the given name from the given bank
 	 */
-	public Sprite getSprite(String bankName, String spriteName)
+	public static Sprite getSprite(String bankName, String spriteName)
 	{
 		return getSpriteBank(bankName).get(spriteName);
 	}
@@ -93,7 +93,7 @@ public class SpriteBank
 	 * @param bankName The name of the spriteBank that holds the sprites
 	 * @param scaling How much the sprites are scaled
 	 */
-	public void scaleSprites(String bankName, Vector2D scaling)
+	public static void scaleSprites(String bankName, Vector2D scaling)
 	{
 		Bank<Sprite> spriteBank = getSpriteBank(bankName);
 		for (String spriteName : spriteBank.getContentNames())
@@ -110,9 +110,11 @@ public class SpriteBank
 		// IMPLEMENTED METHODS	-------------------
 		
 		@Override
-		public void construct(String line, Bank<Bank<Sprite>> bank)
+		public Bank<Sprite> construct(String line, Bank<Bank<Sprite>> bank)
 		{
-			bank.put(line, new Bank<Sprite>());
+			Bank<Sprite> newBank = new Bank<Sprite>();
+			bank.put(line, newBank);
+			return newBank;
 		}
 	}
 	
@@ -128,7 +130,7 @@ public class SpriteBank
 		 * @see arc_bank.BankObjectConstructor#construct(java.lang.String, arc_bank.Bank)
 		 */
 		@Override
-		public void construct(String line, Bank<Sprite> bank)
+		public Sprite construct(String line, Bank<Sprite> bank)
 		{
 			String[] arguments = line.split("#");
 			
@@ -169,6 +171,8 @@ public class SpriteBank
 			
 			// And adds it to the bank
 			bank.put(arguments[0], newSprite);
+			
+			return newSprite;
 		}
 	}
 }
