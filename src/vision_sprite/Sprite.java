@@ -6,6 +6,9 @@ import genesis_util.StateOperator;
 import genesis_util.Vector2D;
 
 import java.awt.image.BufferedImage;
+import java.awt.image.BufferedImageOp;
+import java.awt.image.ConvolveOp;
+import java.awt.image.Kernel;
 import java.io.File;
 import java.io.IOException;
 
@@ -95,6 +98,21 @@ public class Sprite implements Handled
 			origY = getImageDimensions().getSecond() / 2;
 		
 		this.origin = new Vector2D(origX, origY);
+	}
+	
+	// Copies another sprite
+	private Sprite(Sprite other)
+	{
+		this.images = new BufferedImage[other.images.length];
+		this.origin = other.origin;
+		this.forcedDimensions = other.forcedDimensions;
+		this.isDeadStateOperator = new StateOperator(other.isDeadStateOperator.getState(), 
+				true);
+		
+		for (int i = 0; i < this.images.length; i++)
+		{
+			this.images[i] = other.images[i];
+		}
 	}
 	
 	
@@ -190,11 +208,75 @@ public class Sprite implements Handled
 		forceDimensions(getDimensions().times(scaling));
 	}
 	
+	/**
+	 * @return A sharpened version of this sprite
+	 */
+	public Sprite sharpened()
+	{
+		// Creates the sharpening kernel
+		float[] sharpen = new float[] {
+			     0.0f, -1.0f, 0.0f,
+			    -1.0f, 5.0f, -1.0f,
+			     0.0f, -1.0f, 0.0f
+				};
+		return convolve(sharpen, 3, 3);
+	}
+	
+	/**
+	 * @return A blurred version of this sprite
+	 */
+	public Sprite blurred()
+	{
+		float[] blur = new float[] {
+				0.05f, 0.15f, 0.05f,
+				0.15f, 0.2f, 0.15f, 
+				0.05f, 0.15f, 0.05f
+				};
+		
+		return convolve(blur, 3, 3);
+	}
+	
+	/**
+	 * Creates a sprite based on this one, but having different luminosity
+	 * @param scale how much the luminosity of the sprite is scaled. With 0.8 the 
+	 * luminosity would be decreased by 20% wile 0 will make the image pitch black. Scaling 
+	 * with 2 will make the image 200% as luminous.
+	 * @return A version of this sprite that has different luminosity
+	 */
+	public Sprite withLuminosity(float scale)
+	{
+		float[] luminosity = new float[] {scale};
+		return convolve(luminosity, 1, 1);
+	}
+	
+	private Sprite convolve(float[] data, int kernelWidth, int kernelHeight)
+	{
+		// Creates the operation
+		ConvolveOp op = new ConvolveOp(new Kernel(kernelWidth, kernelHeight, data), 
+				ConvolveOp.EDGE_NO_OP, null);
+		
+		// Creates the sharpened sprite and returns it
+		Sprite newSprite = new Sprite(this);
+		newSprite.filterImages(op);
+		return newSprite;
+	}
+	
 	private Vector2D getImageDimensions()
 	{
 		return new Vector2D(getSubImage(0).getWidth(), getSubImage(0).getHeight());
 	}
 	
+	private void filterImages(BufferedImageOp op)
+	{
+		for (int i = 0; i < this.images.length; i++)
+		{
+			this.images[i] = op.filter(this.images[i], null);
+		}
+	}
+	
 	// TODO: If you get bored, try to implement filters into the project
 	// check: http://docs.oracle.com/javase/tutorial/2d/images/drawimage.html
+	
+	/* ConvolveOP (http://www.informit.com/articles/article.aspx?p=1013851&seqNum=5)
+	*/
 }

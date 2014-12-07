@@ -121,7 +121,7 @@ public abstract class AbstractDependentDrawer<T extends Transformable & GameObje
 	@Override
 	public Transformation getTransformation()
 	{
-		return getMaster().getTransformation().plus(getOwnTransformation());
+		return getMaster().getTransformation().transform(getOwnTransformation());
 	}
 
 	@Override
@@ -162,5 +162,14 @@ public abstract class AbstractDependentDrawer<T extends Transformable & GameObje
 	public Transformation getOwnTransformation()
 	{
 		return this.ownTransformation;
+	}
+	
+	/**
+	 * Modifies the drawer's own transformation according to the given transformation
+	 * @param t How the drawer's transformation is transformed
+	 */
+	public void addToOwnTransformation(Transformation t)
+	{
+		setTrasformation(getOwnTransformation().plus(t));
 	}
 }

@@ -329,6 +329,7 @@ public class TileMap extends SimpleGameObject implements Transformable, Writable
 			this.spriteName = spriteName;
 			getSpriteDrawer().setImageIndex(this.startImageIndex);
 			getSpriteDrawer().setImageSpeed(imageSpeed);
+			getSpriteDrawer().setOrigin(Vector2D.zeroVector());
 			scaleToSize(tileSize);
 		}
 		
@@ -343,6 +344,7 @@ public class TileMap extends SimpleGameObject implements Transformable, Writable
 			getSpriteDrawer().setImageIndex(this.startImageIndex);
 			this.spriteName = tileArguments[2];
 			getSpriteDrawer().setImageSpeed(Double.parseDouble(tileArguments[1]));
+			getSpriteDrawer().setOrigin(Vector2D.zeroVector());
 			scaleToSize(tileSize);
 		}
 		

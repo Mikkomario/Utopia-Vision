@@ -71,6 +71,15 @@ public class SimpleSpriteDrawerObject<SpriteDrawerType extends SpriteDrawer> ext
 	// OTHER METHODS	--------------------------
 	
 	/**
+	 * Modifies the object's transformation
+	 * @param t The transformation applied to the object
+	 */
+	public void addTransformation(Transformation t)
+	{
+		setTrasformation(getTransformation().plus(t));
+	}
+	
+	/**
 	 * Changes the spriteDrawer used by this object
 	 * @param spriteDrawer The spriteDrawer that will be used by this object
 	 */

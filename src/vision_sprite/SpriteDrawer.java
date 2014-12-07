@@ -4,6 +4,7 @@ import exodus_object.DependentGameObject;
 import exodus_object.GameObject;
 import genesis_event.Actor;
 import genesis_event.HandlerRelay;
+import genesis_util.Vector2D;
 
 import java.awt.Graphics2D;
 import java.awt.geom.AffineTransform;
@@ -24,6 +25,7 @@ public abstract class SpriteDrawer extends DependentGameObject<GameObject> imple
 	
 	private double imageSpeed, imageIndex;
 	private AnimationListenerHandler listenerhandler;
+	private Vector2D forcedOrigin;
 		
 		
 	// CONSTRUCTOR	-------------------------------------------------------
@@ -138,6 +140,27 @@ public abstract class SpriteDrawer extends DependentGameObject<GameObject> imple
 		return this.listenerhandler;
 	}
 	
+	/**
+	 * @return The origin / offset used when drawing the sprite
+	 */
+	public Vector2D getOrigin()
+	{
+		if (this.forcedOrigin != null)
+			return this.forcedOrigin;
+		else
+			return getSprite().getOrigin();
+	}
+	
+	/**
+	 * Changes the origin / offset that is used when drawing the sprite.
+	 * @param origin The new origin to be used. Null means that the sprite's origin 
+	 * should be used (default)
+	 */
+	public void setOrigin(Vector2D origin)
+	{
+		this.forcedOrigin = origin;
+	}
+	
 	
 	// OTHER METHODS	---------------------------------------------------
 	
@@ -171,9 +194,8 @@ public abstract class SpriteDrawer extends DependentGameObject<GameObject> imple
 		g2d.scale(getSprite().getScaling().getFirst(), getSprite().getScaling().getSecond());
 		
 		// Draws the sprite
-		g2d.drawImage(getSprite().getSubImage(imageindex), 
-				-getSprite().getOrigin().getFirstInt(), 
-				-getSprite().getOrigin().getSecondInt(), null);
+		g2d.drawImage(getSprite().getSubImage(imageindex), -getOrigin().getFirstInt(), 
+				-getOrigin().getSecondInt(), null);
 		
 		g2d.setTransform(lastTransform);
 	}

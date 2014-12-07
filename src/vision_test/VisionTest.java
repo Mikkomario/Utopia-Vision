@@ -33,9 +33,7 @@ import vision_sprite.SpriteBank;
  */
 public class VisionTest
 {
-	// TODO: Make tileMaps resources?
-	
-	// CONSTRUCTOR	---------------
+	// CONSTRUCTOR	------------------
 	
 	private VisionTest()
 	{
@@ -43,7 +41,7 @@ public class VisionTest
 	}
 
 	
-	// MAIN METHOD	---------------
+	// MAIN METHOD	------------------
 	
 	/**
 	 * Starts the test
@@ -78,7 +76,6 @@ public class VisionTest
 			}
 		}
 		
-		// TODO: DependentTransformations don't work like that. Fix in exodus or here
 		map.setTrasformation(map.getTransformation().withPosition(new Vector2D(100, 100)));
 		map.setTrasformation(map.getTransformation().plus(Transformation.rotationTransformation(5)));
 		
@@ -107,7 +104,7 @@ public class VisionTest
 		
 		// Creates a test object as well
 		Area area = AreaBank.getArea("test", "area1");
-		/*
+		/* TODO: Finish
 		SimpleSingleSpriteDrawerObject testObject = new SimpleSingleSpriteDrawerObject(0, 
 				SpriteBank.getSprite("test", "close"), area.getHandlers());
 		testObject.setTrasformation(Transformation.transitionTransformation(new Vector2D(100, 100)));
