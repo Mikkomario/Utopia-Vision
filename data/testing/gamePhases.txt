@@ -1,0 +1,2 @@
+&default
+phase1#SPRITE:test

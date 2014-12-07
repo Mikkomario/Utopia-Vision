@@ -1,0 +1,2 @@
+&test
+area1#default#phase1#testing/area1.txt

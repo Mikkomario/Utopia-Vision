@@ -26,19 +26,19 @@ public class SimpleSpriteDrawerObject<SpriteDrawerType extends SpriteDrawer> ext
 	// CONSTRUCTOR	-------------------------
 	
 	/**
-	 * Creates a new object
-	 * @param spriteDrawer The drawer used for drawing the sprite(s)
+	 * Creates a new object. The spriteDrawer has to be set separately, since it will probably 
+	 * use this object as the master object.
 	 * @param initialDepth The drawing depth used by the object
 	 * @param handlers The handlers that will handle this object
+	 * @see #setSpriteDrawer(SpriteDrawer)
 	 */
-	public SimpleSpriteDrawerObject(SpriteDrawerType spriteDrawer, int initialDepth, 
-			HandlerRelay handlers)
+	public SimpleSpriteDrawerObject(int initialDepth, HandlerRelay handlers)
 	{
 		super(handlers);
 		
 		// Initializes attributes
 		this.transformation = new Transformation();
-		this.drawer = new DependentSpriteDrawer<>(this, initialDepth, spriteDrawer, handlers);
+		this.drawer = new DependentSpriteDrawer<>(this, initialDepth, null, handlers);
 	}
 	
 	
@@ -65,5 +65,17 @@ public class SimpleSpriteDrawerObject<SpriteDrawerType extends SpriteDrawer> ext
 	public DependentSpriteDrawer<SimpleSpriteDrawerObject<SpriteDrawerType>, SpriteDrawerType> getDrawer()
 	{
 		return this.drawer;
+	}
+	
+	
+	// OTHER METHODS	--------------------------
+	
+	/**
+	 * Changes the spriteDrawer used by this object
+	 * @param spriteDrawer The spriteDrawer that will be used by this object
+	 */
+	public void setSpriteDrawer(SpriteDrawerType spriteDrawer)
+	{
+		getDrawer().setSpriteDrawer(spriteDrawer);
 	}
 }

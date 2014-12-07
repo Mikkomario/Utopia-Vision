@@ -31,7 +31,8 @@ public class DependentSpriteDrawer<T extends Transformable & GameObject,
 	 * Creates a new drawer
 	 * @param user The user that uses this drawer
 	 * @param initialDepth The depth the drawer uses initially
-	 * @param spriteDrawer The spriteDrawer used for drawing the sprite(s)
+	 * @param spriteDrawer The spriteDrawer used for drawing the sprite(s) (optional, 
+	 * can be added later with setSpriteDrawer())
 	 * @param handlers The handlers that will handle this drawer
 	 * @param isVisibleOperator The stateOperator that defines the visibility of this drawer
 	 */
@@ -66,7 +67,8 @@ public class DependentSpriteDrawer<T extends Transformable & GameObject,
 	@Override
 	protected void drawSelfBasic(Graphics2D g2d)
 	{
-		this.spriteDrawer.drawSprite(g2d);
+		if (this.spriteDrawer != null)
+			this.spriteDrawer.drawSprite(g2d);
 	}
 	
 	
@@ -87,7 +89,8 @@ public class DependentSpriteDrawer<T extends Transformable & GameObject,
 	public void setSpriteDrawer(SpriteDrawerType drawer)
 	{
 		// Kills the previous drawer
-		getSpriteDrawer().separate();
+		if (getSpriteDrawer() != null)
+			getSpriteDrawer().separate();
 		this.spriteDrawer = drawer;
 	}
 	

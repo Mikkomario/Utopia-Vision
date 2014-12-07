@@ -1,6 +1,8 @@
 package vision_drawing;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import vision_sprite.SingleSpriteDrawer;
@@ -21,24 +23,24 @@ import genesis_util.Vector2D;
  * @author Mikko Hilpinen
  * @since 6.12.2014
  */
-public class TileMap extends SimpleGameObject implements Transformable, Writable
+public class TileMap extends SimpleGameObject implements Transformable, Writable, 
+		ConstructableGameObject
 {
 	// ATTRIBUTES	-----------------------
 	
 	private String spriteBankName;
-	private DependentSpriteDrawer<?, ?>[][] tiles;
+	private Tile[][] tiles;
 	private Vector2D tileSize;
 	private Transformation transformation;
 	private HandlerRelay handlers;
 	private int depth;
-	
-	private String[][] spriteNames;
+	private TileMapConstruction construction;
 	
 	
 	// CONSTRUCTOR	-----------------------
 	
 	/**
-	 * Creates a new TileMap
+	 * Creates a new TileMap.
 	 * 
 	 * @param spriteBankName The name of the SpriteBank that contains the sprites used in this 
 	 * map
@@ -55,11 +57,24 @@ public class TileMap extends SimpleGameObject implements Transformable, Writable
 		// Initializes attributes
 		this.spriteBankName = spriteBankName;
 		this.depth = depth;
-		this.tiles = new DependentSpriteDrawer<?, ?>
-				[tileAmounts.getFirstInt()][tileAmounts.getSecondInt()];
-		this.spriteNames = new String[tileAmounts.getFirstInt()][tileAmounts.getSecondInt()];
+		this.tiles = new Tile[tileAmounts.getFirstInt()][tileAmounts.getSecondInt()];
 		this.tileSize = tileSize;
 		this.handlers = handlers;
+		this.transformation = new Transformation();
+	}
+	
+	/**
+	 * Creates a new TileMap that may be constructed in parts
+	 * @param handlers The handlers that will handle this map
+	 */
+	public TileMap(HandlerRelay handlers)
+	{
+		super(handlers);
+		
+		// Initializes attributes
+		this.handlers = handlers;
+		this.construction = new TileMapConstruction();
+		this.transformation = new Transformation();
 	}
 	
 	
@@ -83,7 +98,8 @@ public class TileMap extends SimpleGameObject implements Transformable, Writable
 		Map<String, String> attributes = new HashMap<>();
 		
 		// Adds the dimensions
-		attributes.put("tileAmounts", new Vector2D(this.tiles.length, this.tiles[0].length).toString());
+		attributes.put("tileAmounts", new Vector2D(this.tiles.length, 
+				this.tiles[0].length).toString());
 		
 		// Adds the basic attributes
 		attributes.put("spriteBankName", this.spriteBankName);
@@ -94,14 +110,13 @@ public class TileMap extends SimpleGameObject implements Transformable, Writable
 		attributes.putAll(getTransformation().getAttributes());
 		
 		// Adds the tiles
-		for (int x = 0; x < this.spriteNames.length; x++)
+		for (int x = 0; x < this.tiles.length; x++)
 		{
-			for (int y = 0; y < this.spriteNames[0].length; y++)
+			for (int y = 0; y < this.tiles[0].length; y++)
 			{
-				String spriteName = this.spriteNames[x][y];
-				if (spriteName != null)
-					attributes.put("tile" + x + "," + y + "ANIM" + 
-							this.tiles[x][y].getSpriteDrawer().getImageSpeed(), spriteName);
+				Tile tile = this.tiles[x][y];
+				if (tile != null)
+					attributes.put("tile" + x + "," + y, tile.toString());
 			}
 		}
 		
@@ -115,6 +130,36 @@ public class TileMap extends SimpleGameObject implements Transformable, Writable
 		return new HashMap<String, Writable>();
 	}
 	
+	@Override
+	public String getID()
+	{
+		if (this.construction != null)
+			return this.construction.getID();
+		else
+			return null;
+	}
+
+	@Override
+	public void setAttribute(String attributeName, String attributeValue)
+	{
+		if (this.construction != null)
+			this.construction.setAttribute(attributeName, attributeValue);
+	}
+
+	@Override
+	public void setID(String id)
+	{
+		if (this.construction != null)
+			this.construction.setID(id);
+	}
+
+	@Override
+	public void setLink(String linkName, ConstructableGameObject target)
+	{
+		if (this.construction != null)
+			this.construction.setLink(linkName, target);
+	}
+	
 	
 	// OTHER METHODS	--------------------------
 	
@@ -123,23 +168,24 @@ public class TileMap extends SimpleGameObject implements Transformable, Writable
 	 * @param position The position where the tile will be put (x, y) in tiles, starting 
 	 * from (0, 0).
 	 * @param tileSpriteName The name of the sprite used for drawing the tile
+	 * @param imageIndex The image index the tile starts from (default 0)
 	 * @param animationSpeed How fast the animation in the tile is (default at 0.1)
 	 */
-	public void setTile(Vector2D position, String tileSpriteName, double animationSpeed)
+	public void setTile(Vector2D position, String tileSpriteName, int imageIndex, 
+			double animationSpeed)
+	{
+		setTile(position, new Tile(this, this.depth, this.spriteBankName, tileSpriteName, 
+				animationSpeed, imageIndex, this.tileSize, this.handlers));
+	}
+	
+	private void setTile(Vector2D position, Tile tile)
 	{
 		// If there already is a tile at the given position, removes it
 		removeTile(position);
 		
 		// Adds a new tile to the given position
-		DependentSpriteDrawer<TileMap, SingleSpriteDrawer> newTile = 
-				new DependentSpriteDrawer<>(this, this.depth, 
-				new SingleSpriteDrawer(SpriteBank.getSprite(
-				this.spriteBankName, tileSpriteName), this, this.handlers), this.handlers);
-		
-		this.tiles[position.getFirstInt()][position.getSecondInt()] = newTile;
-		this.spriteNames[position.getFirstInt()][position.getSecondInt()] = tileSpriteName;
-		newTile.scaleToSize(this.tileSize);
-		newTile.getSpriteDrawer().setImageSpeed(animationSpeed);
+		this.tiles[position.getFirstInt()][position.getSecondInt()] = tile;
+		tile.setTrasformation(tile.getOwnTransformation().withPosition(position.times(this.tileSize)));
 	}
 	
 	/**
@@ -149,14 +195,10 @@ public class TileMap extends SimpleGameObject implements Transformable, Writable
 	 */
 	public void removeTile(Vector2D position)
 	{
-		DependentSpriteDrawer<?, ?> tile = 
-				this.tiles[position.getFirstInt()][position.getSecondInt()];
+		Tile tile = this.tiles[position.getFirstInt()][position.getSecondInt()];
 		
 		if (tile != null)
-		{
 			tile.separate();
-			this.spriteNames[position.getFirstInt()][position.getSecondInt()] = null;
-		}
 	}
 	
 	/**
@@ -166,31 +208,28 @@ public class TileMap extends SimpleGameObject implements Transformable, Writable
 	 * @author Mikko Hilpinen
 	 * @since 6.12.2014
 	 */
-	public static class TileMapConstruction implements Constructable<ConstructableGameObject>
+	private class TileMapConstruction implements Constructable<Constructable<?>>
 	{
 		// ATTRIBUTES	---------------------
 		
-		private String id, spriteBankName;
-		private Vector2D tileSize, tileAmounts;
-		private Transformation transformation;
-		private int depth;
-		private Map<String, String> tileNames;
-		
-		private HandlerRelay handlers;
+		private String id;
+		private Map<String, String> tileData;
+		private List<String> requiredFeatures;
 		
 		
 		// CONSTRUCTOR	----------------------
 		
 		/**
 		 * Creates a new TileMapConstruction ready to be constructed
-		 * @param handlers The handlers that will handle the tileMap created from this 
-		 * construction
 		 */
-		public TileMapConstruction(HandlerRelay handlers)
+		public TileMapConstruction()
 		{
-			this.handlers = handlers;
-			this.tileNames = new HashMap<>();
-			this.transformation = new Transformation();
+			this.tileData = new HashMap<>();
+			this.requiredFeatures = new ArrayList<>();
+			
+			this.requiredFeatures.add("tileAmounts");
+			this.requiredFeatures.add("tileSize");
+			this.requiredFeatures.add("depth");
 		}
 		
 		
@@ -205,21 +244,56 @@ public class TileMap extends SimpleGameObject implements Transformable, Writable
 		@Override
 		public void setAttribute(String attributeName, String attributeValue)
 		{
+			boolean wasBasicAttribute = false;
+			
 			// Checks if is any of the basic attributes
 			switch (attributeName)
 			{
-				case "spriteBankName": this.spriteBankName = attributeValue; return;
-				case "tileSize": this.tileSize = Vector2D.parseFromString(attributeValue); return;
-				case "tileAmounts": this.tileAmounts = Vector2D.parseFromString(attributeValue); return;
-				case "depth": this.depth = Integer.parseInt(attributeValue);
+				case "spriteBankName": 
+					TileMap.this.spriteBankName = attributeValue;
+					wasBasicAttribute = true;
+					break;
+				case "tileSize":
+					TileMap.this.tileSize = Vector2D.parseFromString(attributeValue);
+					wasBasicAttribute = true;
+					break;
+				case "tileAmounts": 
+					Vector2D tileAmounts = Vector2D.parseFromString(attributeValue);
+					TileMap.this.tiles = 
+							new Tile[tileAmounts.getFirstInt()][tileAmounts.getSecondInt()];
+					wasBasicAttribute = true;
+					break;
+				case "depth":
+					TileMap.this.depth = Integer.parseInt(attributeValue);
+					wasBasicAttribute = true;
+					break;
 			}
+			
+			if (wasBasicAttribute)
+				this.requiredFeatures.remove(attributeName);
 			// Otherwise may be a new tile
-			if (attributeName.startsWith("tile"))
-				this.tileNames.put(attributeName, attributeValue);
+			else if (attributeName.startsWith("tile"))
+				this.tileData.put(attributeName, attributeValue);
 			// Otherwise is a transformation update
 			else
-				this.transformation = this.transformation.withAttribute(attributeName, 
-						attributeValue);
+				setTrasformation(getTransformation().withAttribute(attributeName, 
+						attributeValue));
+			
+			// Once all the basic attributes have been collected, starts the construction
+			if (this.requiredFeatures.isEmpty())
+			{
+				for (String tilePosition : this.tileData.keySet())
+				{
+					String[] tileArguments = this.tileData.get(tilePosition).split(",");
+					Vector2D position = Vector2D.parseFromString(tilePosition.substring(4));
+					
+					setTile(position, new Tile(TileMap.this, TileMap.this.spriteBankName, 
+							TileMap.this.depth, TileMap.this.tileSize, tileArguments, 
+							TileMap.this.handlers));
+				}
+				
+				this.tileData.clear();
+			}
 		}
 
 		@Override
@@ -229,31 +303,62 @@ public class TileMap extends SimpleGameObject implements Transformable, Writable
 		}
 
 		@Override
-		public void setLink(String linkName, ConstructableGameObject target)
+		public void setLink(String linkName, Constructable<?> target)
 		{
 			// Doesn't use links
 		}
+	}
+	
+	private static class Tile extends DependentSpriteDrawer<TileMap, SingleSpriteDrawer>
+	{
+		// ATTRIBUTES	----------------------------
+		
+		private int startImageIndex;
+		private String spriteName;
 		
 		
-		// OTHER METHODS	----------------------
+		// CONSTRUCTOR	----------------------------
 		
-		/**
-		 * @return A tileMap based on this construction
-		 */
-		public TileMap toTileMap()
+		public Tile(TileMap user, int initialDepth, String spriteBankName, String spriteName, 
+				double imageSpeed, int imageIndex, Vector2D tileSize, HandlerRelay handlers)
 		{
-			TileMap map = new TileMap(this.spriteBankName, this.depth, this.tileAmounts, 
-					this.tileSize, this.handlers);
+			super(user, initialDepth, new SingleSpriteDrawer(SpriteBank.getSprite(
+					spriteBankName, spriteName), user, handlers), handlers);
 			
-			for (String tile : this.tileNames.keySet())
-			{
-				String spriteName = this.tileNames.get(tile);
-				String[] arguments = tile.split("ANIM");
-				Vector2D position = Vector2D.parseFromString(arguments[0].substring(4));
-				map.setTile(position, spriteName, Double.parseDouble(arguments[1]));
-			}
+			this.startImageIndex = imageIndex;
+			this.spriteName = spriteName;
+			getSpriteDrawer().setImageIndex(this.startImageIndex);
+			getSpriteDrawer().setImageSpeed(imageSpeed);
+			scaleToSize(tileSize);
+		}
+		
+		// Use split(",") to get the tileArguments
+		public Tile(TileMap user, String spriteBankName, int depth, Vector2D tileSize, 
+				String[] tileArguments, HandlerRelay handlers)
+		{
+			super(user, depth, new SingleSpriteDrawer(SpriteBank.getSprite(spriteBankName, 
+					tileArguments[2]), user, handlers), handlers);
 			
-			return map;
+			this.startImageIndex = Integer.parseInt(tileArguments[0]);
+			getSpriteDrawer().setImageIndex(this.startImageIndex);
+			this.spriteName = tileArguments[2];
+			getSpriteDrawer().setImageSpeed(Double.parseDouble(tileArguments[1]));
+			scaleToSize(tileSize);
+		}
+		
+		
+		// IMPLEMENTED METHODS	--------------------
+		
+		@Override
+		public String toString()
+		{
+			/*
+			 * attributes.put("tile" + x + "," + y + "ANIM" + 
+							this.tiles[x][y].getSpriteDrawer().getImageSpeed(), spriteName);
+			 */
+			
+			return this.startImageIndex + "," + getSpriteDrawer().getImageSpeed() + "," + 
+					this.spriteName;
 		}
 	}
 }
