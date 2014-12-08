@@ -212,6 +212,7 @@ public abstract class SpriteDrawer extends DependentGameObject<GameObject> imple
 	{
 		int imageindexlast = getImageIndex();
 		
+		// TODO: Can apprarently throw a nullPointer exception in very rare circumstances
 		this.imageIndex = this.imageIndex % getSprite().getImageNumber();
 		
 		if (this.imageIndex < 0)

@@ -9,6 +9,7 @@ import java.awt.image.BufferedImage;
 import java.awt.image.BufferedImageOp;
 import java.awt.image.ConvolveOp;
 import java.awt.image.Kernel;
+import java.awt.image.RescaleOp;
 import java.io.File;
 import java.io.IOException;
 
@@ -245,8 +246,10 @@ public class Sprite implements Handled
 	 */
 	public Sprite withLuminosity(float scale)
 	{
-		float[] luminosity = new float[] {scale};
-		return convolve(luminosity, 1, 1);
+		float[] scales = {scale, scale, scale, 1.0f};
+		float[] offsets = {0, 0, 0, 0};
+		RescaleOp op = new RescaleOp(scales, offsets, null);
+	    return filteredWith(op);
 	}
 	
 	private Sprite convolve(float[] data, int kernelWidth, int kernelHeight)
@@ -256,9 +259,7 @@ public class Sprite implements Handled
 				ConvolveOp.EDGE_NO_OP, null);
 		
 		// Creates the sharpened sprite and returns it
-		Sprite newSprite = new Sprite(this);
-		newSprite.filterImages(op);
-		return newSprite;
+		return filteredWith(op);
 	}
 	
 	private Vector2D getImageDimensions()
@@ -266,12 +267,16 @@ public class Sprite implements Handled
 		return new Vector2D(getSubImage(0).getWidth(), getSubImage(0).getHeight());
 	}
 	
-	private void filterImages(BufferedImageOp op)
+	private Sprite filteredWith(BufferedImageOp op)
 	{
+		Sprite newSprite = new Sprite(this);
+		
 		for (int i = 0; i < this.images.length; i++)
 		{
-			this.images[i] = op.filter(this.images[i], null);
+			newSprite.images[i] = op.filter(this.images[i], null);
 		}
+		
+		return newSprite;
 	}
 	
 	// TODO: If you get bored, try to implement filters into the project
@@ -279,4 +284,28 @@ public class Sprite implements Handled
 	
 	/* ConvolveOP (http://www.informit.com/articles/article.aspx?p=1013851&seqNum=5)
 	*/
+	/*
+	 * protected LookupOp createColorizeOp(short R1, short G1, short B1) {
+    short[] alpha = new short[256];
+    short[] red = new short[256];
+    short[] green = new short[256];
+    short[] blue = new short[256];
+
+    int Y = 0.3*R + 0.59*G + 0.11*B
+
+    for (short i = 0; i < 256; i++) {
+        alpha[i] = i;
+        red[i] = (R1 + i*.3)/2;
+        green[i] = (G1 + i*.59)/2;
+        blue[i] = (B1 + i*.11)/2;
+    }
+
+    short[][] data = new short[][] {
+            red, green, blue, alpha
+    };
+
+    LookupTable lookupTable = new ShortLookupTable(0, data);
+    return new LookupOp(lookupTable, null);
+}
+	 */
 }

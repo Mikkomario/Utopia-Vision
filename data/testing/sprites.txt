@@ -2,3 +2,4 @@
 belt#testing/belt_real_strip2.png#2
 mark#testing/bookmarks_strip5.png#5
 close#testing/closebutton_strip2.png#2#-1#-1#64#64
+spell#testing/panic_spell_strip4.png#4

@@ -15,12 +15,14 @@ import flow_recording.TextObjectWriter;
 import genesis_event.ActorHandler;
 import genesis_event.DrawableHandler;
 import genesis_event.HandlerRelay;
+import genesis_event.MouseListenerHandler;
 import genesis_util.DepthConstants;
 import genesis_util.Vector2D;
 import genesis_video.GamePanel;
 import genesis_video.GameWindow;
 import arc_bank.GamePhaseBank;
 import arc_resource.ResourceActivator;
+import vision_drawing.SimpleSingleSpriteDrawerObject;
 import vision_drawing.TileMap;
 import vision_drawing.TileMapConstructor;
 import vision_sprite.SpriteBank;
@@ -104,11 +106,11 @@ public class VisionTest
 		
 		// Creates a test object as well
 		Area area = AreaBank.getArea("test", "area1");
-		/* TODO: Finish
+		
 		SimpleSingleSpriteDrawerObject testObject = new SimpleSingleSpriteDrawerObject(0, 
-				SpriteBank.getSprite("test", "close"), area.getHandlers());
+				SpriteBank.getSprite("test", "spell").withLuminosity(2f), area.getHandlers());
 		testObject.setTrasformation(Transformation.transitionTransformation(new Vector2D(100, 100)));
-		*/
+		
 		// Starts the first ares
 		area.start(false);
 	}
@@ -140,6 +142,7 @@ public class VisionTest
 			
 			handlers.addHandler(new DrawableHandler(false, true, 0, 1, this.superHandlers));
 			handlers.addHandler(new ActorHandler(false, this.superHandlers));
+			handlers.addHandler(new MouseListenerHandler(false, this.superHandlers));
 			
 			return handlers;
 		}

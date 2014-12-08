@@ -5,7 +5,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import vision_sprite.SingleSpriteDrawer;
 import vision_sprite.SpriteBank;
 import exodus_object.ConstructableGameObject;
 import exodus_object.SimpleGameObject;
@@ -309,7 +308,7 @@ public class TileMap extends SimpleGameObject implements Transformable, Writable
 		}
 	}
 	
-	private static class Tile extends DependentSpriteDrawer<TileMap, SingleSpriteDrawer>
+	private static class Tile extends DependentSingleSpriteDrawer<TileMap>
 	{
 		// ATTRIBUTES	----------------------------
 		
@@ -322,8 +321,8 @@ public class TileMap extends SimpleGameObject implements Transformable, Writable
 		public Tile(TileMap user, int initialDepth, String spriteBankName, String spriteName, 
 				double imageSpeed, int imageIndex, Vector2D tileSize, HandlerRelay handlers)
 		{
-			super(user, initialDepth, new SingleSpriteDrawer(SpriteBank.getSprite(
-					spriteBankName, spriteName), user, handlers), handlers);
+			super(user, initialDepth, SpriteBank.getSprite(spriteBankName, spriteName), 
+					handlers);
 			
 			this.startImageIndex = imageIndex;
 			this.spriteName = spriteName;
@@ -337,8 +336,8 @@ public class TileMap extends SimpleGameObject implements Transformable, Writable
 		public Tile(TileMap user, String spriteBankName, int depth, Vector2D tileSize, 
 				String[] tileArguments, HandlerRelay handlers)
 		{
-			super(user, depth, new SingleSpriteDrawer(SpriteBank.getSprite(spriteBankName, 
-					tileArguments[2]), user, handlers), handlers);
+			super(user, depth, SpriteBank.getSprite(spriteBankName, tileArguments[2]), 
+					handlers);
 			
 			this.startImageIndex = Integer.parseInt(tileArguments[0]);
 			getSpriteDrawer().setImageIndex(this.startImageIndex);
