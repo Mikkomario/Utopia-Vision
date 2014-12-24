@@ -5,11 +5,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import omega_util.SimpleGameObject;
+import omega_util.Transformable;
+import omega_util.Transformation;
 import vision_sprite.SpriteBank;
-import exodus_object.ConstructableGameObject;
-import exodus_object.SimpleGameObject;
-import exodus_util.Transformable;
-import exodus_util.Transformation;
+import exodus_util.ConstructableGameObject;
 import flow_recording.Constructable;
 import flow_recording.Writable;
 import genesis_event.HandlerRelay;

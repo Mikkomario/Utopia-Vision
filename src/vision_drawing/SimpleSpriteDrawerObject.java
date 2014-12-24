@@ -1,9 +1,9 @@
 package vision_drawing;
 
+import omega_util.SimpleGameObject;
+import omega_util.Transformable;
+import omega_util.Transformation;
 import vision_sprite.SpriteDrawer;
-import exodus_object.SimpleGameObject;
-import exodus_util.Transformable;
-import exodus_util.Transformation;
 import genesis_event.HandlerRelay;
 
 /**

@@ -1,9 +1,9 @@
 package vision_drawing;
 
+import omega_util.GameObject;
+import omega_util.Transformable;
 import vision_sprite.MultiSpriteDrawer;
 import vision_sprite.Sprite;
-import exodus_object.GameObject;
-import exodus_util.Transformable;
 import genesis_event.HandlerRelay;
 import genesis_util.StateOperator;
 

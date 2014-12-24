@@ -4,10 +4,10 @@ import java.awt.AlphaComposite;
 import java.awt.Graphics2D;
 import java.awt.geom.AffineTransform;
 
-import exodus_object.DependentGameObject;
-import exodus_object.GameObject;
-import exodus_util.Transformable;
-import exodus_util.Transformation;
+import omega_util.DependentGameObject;
+import omega_util.GameObject;
+import omega_util.Transformable;
+import omega_util.Transformation;
 import genesis_event.Drawable;
 import genesis_event.HandlerRelay;
 import genesis_util.StateOperator;

@@ -1,13 +1,14 @@
 package vision_sprite;
 
-import exodus_object.DependentGameObject;
-import exodus_object.GameObject;
 import genesis_event.Actor;
 import genesis_event.HandlerRelay;
 import genesis_util.Vector2D;
 
 import java.awt.Graphics2D;
 import java.awt.geom.AffineTransform;
+
+import omega_util.DependentGameObject;
+import omega_util.GameObject;
 
 /**
  * Spritedrawer is able to draw animated sprites for an object. Object's can 

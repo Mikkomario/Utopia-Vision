@@ -1,6 +1,6 @@
 package vision_sprite;
 
-import exodus_object.GameObject;
+import omega_util.GameObject;
 import genesis_event.HandlerRelay;
 
 /**

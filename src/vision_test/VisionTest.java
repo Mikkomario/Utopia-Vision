@@ -3,8 +3,8 @@ package vision_test;
 import java.io.BufferedWriter;
 import java.util.Random;
 
-import exodus_object.ConstructableGameObject;
-import exodus_util.Transformation;
+import omega_util.Transformation;
+import exodus_util.ConstructableGameObject;
 import exodus_world.Area;
 import exodus_world.AreaBank;
 import exodus_world.AreaHandlerConstructor;

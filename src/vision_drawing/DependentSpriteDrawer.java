@@ -2,9 +2,9 @@ package vision_drawing;
 
 import java.awt.Graphics2D;
 
+import omega_util.GameObject;
+import omega_util.Transformable;
 import vision_sprite.SpriteDrawer;
-import exodus_object.GameObject;
-import exodus_util.Transformable;
 import genesis_event.HandlerRelay;
 import genesis_util.StateOperator;
 import genesis_util.Vector2D;

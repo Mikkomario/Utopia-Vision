@@ -1,6 +1,6 @@
 package vision_drawing;
 
-import exodus_object.ConstructableGameObject;
+import exodus_util.ConstructableGameObject;
 import flow_recording.AbstractConstructor;
 import genesis_event.HandlerRelay;
 
