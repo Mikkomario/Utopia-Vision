@@ -108,7 +108,7 @@ public class VisionTest
 		Area area = AreaBank.getArea("test", "area1");
 		
 		SimpleSingleSpriteDrawerObject testObject = new SimpleSingleSpriteDrawerObject(0, 
-				SpriteBank.getSprite("test", "spell").withLuminosity(2f), area.getHandlers());
+				SpriteBank.getSprite("test", "spell").sharpened(), area.getHandlers());
 		testObject.setTrasformation(Transformation.transitionTransformation(new Vector2D(100, 100)));
 		
 		// Starts the first ares

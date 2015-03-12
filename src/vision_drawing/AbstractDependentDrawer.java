@@ -112,7 +112,10 @@ public abstract class AbstractDependentDrawer<T extends Transformable & GameObje
 			return getMaster().getIsActiveStateOperator();
 	}
 
-	@Override
+	/**
+	 * Changes the drawer's depth
+	 * @param depth The drawer's new drawing depth
+	 */
 	public void setDepth(int depth)
 	{
 		this.depth = depth;
