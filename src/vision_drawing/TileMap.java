@@ -13,7 +13,7 @@ import exodus_util.ConstructableGameObject;
 import flow_recording.Constructable;
 import flow_recording.Writable;
 import genesis_event.HandlerRelay;
-import genesis_util.Vector2D;
+import genesis_util.Vector3D;
 
 /**
  * Tilemaps are constructed from multiple different tiles. They can be used as more varying 
@@ -29,7 +29,7 @@ public class TileMap extends SimpleGameObject implements Transformable, Writable
 	
 	private String spriteBankName;
 	private Tile[][] tiles;
-	private Vector2D tileSize;
+	private Vector3D tileSize;
 	private Transformation transformation;
 	private HandlerRelay handlers;
 	private int depth;
@@ -48,7 +48,7 @@ public class TileMap extends SimpleGameObject implements Transformable, Writable
 	 * @param tileSize How large each tile should be
 	 * @param handlers The handlers that will handle this map
 	 */
-	public TileMap(String spriteBankName, int depth, Vector2D tileAmounts, Vector2D tileSize, 
+	public TileMap(String spriteBankName, int depth, Vector3D tileAmounts, Vector3D tileSize, 
 			HandlerRelay handlers)
 	{
 		super(handlers);
@@ -97,7 +97,7 @@ public class TileMap extends SimpleGameObject implements Transformable, Writable
 		Map<String, String> attributes = new HashMap<>();
 		
 		// Adds the dimensions
-		attributes.put("tileAmounts", new Vector2D(this.tiles.length, 
+		attributes.put("tileAmounts", new Vector3D(this.tiles.length, 
 				this.tiles[0].length).toString());
 		
 		// Adds the basic attributes
@@ -170,14 +170,14 @@ public class TileMap extends SimpleGameObject implements Transformable, Writable
 	 * @param imageIndex The image index the tile starts from (default 0)
 	 * @param animationSpeed How fast the animation in the tile is (default at 0.1)
 	 */
-	public void setTile(Vector2D position, String tileSpriteName, int imageIndex, 
+	public void setTile(Vector3D position, String tileSpriteName, int imageIndex, 
 			double animationSpeed)
 	{
 		setTile(position, new Tile(this, this.depth, this.spriteBankName, tileSpriteName, 
 				animationSpeed, imageIndex, this.tileSize, this.handlers));
 	}
 	
-	private void setTile(Vector2D position, Tile tile)
+	private void setTile(Vector3D position, Tile tile)
 	{
 		// If there already is a tile at the given position, removes it
 		removeTile(position);
@@ -192,7 +192,7 @@ public class TileMap extends SimpleGameObject implements Transformable, Writable
 	 * @param position The position where the tile is removed from (x, y) in tiles starting 
 	 * from (0, 0)
 	 */
-	public void removeTile(Vector2D position)
+	public void removeTile(Vector3D position)
 	{
 		Tile tile = this.tiles[position.getFirstInt()][position.getSecondInt()];
 		
@@ -253,11 +253,11 @@ public class TileMap extends SimpleGameObject implements Transformable, Writable
 					wasBasicAttribute = true;
 					break;
 				case "tileSize":
-					TileMap.this.tileSize = Vector2D.parseFromString(attributeValue);
+					TileMap.this.tileSize = Vector3D.parseFromString(attributeValue);
 					wasBasicAttribute = true;
 					break;
 				case "tileAmounts": 
-					Vector2D tileAmounts = Vector2D.parseFromString(attributeValue);
+					Vector3D tileAmounts = Vector3D.parseFromString(attributeValue);
 					TileMap.this.tiles = 
 							new Tile[tileAmounts.getFirstInt()][tileAmounts.getSecondInt()];
 					wasBasicAttribute = true;
@@ -284,7 +284,7 @@ public class TileMap extends SimpleGameObject implements Transformable, Writable
 				for (String tilePosition : this.tileData.keySet())
 				{
 					String[] tileArguments = this.tileData.get(tilePosition).split(",");
-					Vector2D position = Vector2D.parseFromString(tilePosition.substring(4));
+					Vector3D position = Vector3D.parseFromString(tilePosition.substring(4));
 					
 					setTile(position, new Tile(TileMap.this, TileMap.this.spriteBankName, 
 							TileMap.this.depth, TileMap.this.tileSize, tileArguments, 
@@ -319,7 +319,7 @@ public class TileMap extends SimpleGameObject implements Transformable, Writable
 		// CONSTRUCTOR	----------------------------
 		
 		public Tile(TileMap user, int initialDepth, String spriteBankName, String spriteName, 
-				double imageSpeed, int imageIndex, Vector2D tileSize, HandlerRelay handlers)
+				double imageSpeed, int imageIndex, Vector3D tileSize, HandlerRelay handlers)
 		{
 			super(user, initialDepth, SpriteBank.getSprite(spriteBankName, spriteName), 
 					handlers);
@@ -328,12 +328,12 @@ public class TileMap extends SimpleGameObject implements Transformable, Writable
 			this.spriteName = spriteName;
 			getSpriteDrawer().setImageIndex(this.startImageIndex);
 			getSpriteDrawer().setImageSpeed(imageSpeed);
-			getSpriteDrawer().setOrigin(Vector2D.zeroVector());
+			getSpriteDrawer().setOrigin(Vector3D.zeroVector());
 			scaleToSize(tileSize);
 		}
 		
 		// Use split(",") to get the tileArguments
-		public Tile(TileMap user, String spriteBankName, int depth, Vector2D tileSize, 
+		public Tile(TileMap user, String spriteBankName, int depth, Vector3D tileSize, 
 				String[] tileArguments, HandlerRelay handlers)
 		{
 			super(user, depth, SpriteBank.getSprite(spriteBankName, tileArguments[2]), 
@@ -343,7 +343,7 @@ public class TileMap extends SimpleGameObject implements Transformable, Writable
 			getSpriteDrawer().setImageIndex(this.startImageIndex);
 			this.spriteName = tileArguments[2];
 			getSpriteDrawer().setImageSpeed(Double.parseDouble(tileArguments[1]));
-			getSpriteDrawer().setOrigin(Vector2D.zeroVector());
+			getSpriteDrawer().setOrigin(Vector3D.zeroVector());
 			scaleToSize(tileSize);
 		}
 		

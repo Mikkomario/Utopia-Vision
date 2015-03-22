@@ -3,7 +3,7 @@ package vision_sprite;
 import genesis_event.Handled;
 import genesis_util.HelpMath;
 import genesis_util.StateOperator;
-import genesis_util.Vector2D;
+import genesis_util.Vector3D;
 
 import java.awt.image.BufferedImage;
 import java.awt.image.BufferedImageOp;
@@ -32,7 +32,7 @@ public class Sprite implements Handled
 	
 	private BufferedImage[] images;
 	
-	private Vector2D origin, forcedDimensions;
+	private Vector3D origin, forcedDimensions;
 	private StateOperator isDeadStateOperator;
 	
 	
@@ -48,7 +48,7 @@ public class Sprite implements Handled
 	 * @param numberOfImages How many separate images does the strip contain?
 	 * @param origin The sprite's origin's coordinates (relative)
 	 */
-	public Sprite(String filename, int numberOfImages, Vector2D origin)
+	public Sprite(String filename, int numberOfImages, Vector3D origin)
 	{
 		// Checks the variables
 		if (filename == null || numberOfImages <= 0)
@@ -98,7 +98,7 @@ public class Sprite implements Handled
 		if (HelpMath.areApproximatelyEqual(origY, -1))
 			origY = getImageDimensions().getSecond() / 2;
 		
-		this.origin = new Vector2D(origX, origY);
+		this.origin = new Vector3D(origX, origY);
 	}
 	
 	// Copies another sprite
@@ -131,7 +131,7 @@ public class Sprite implements Handled
 	/**
 	 * @return The sprite's origin's coordinates (relative)
 	 */
-	public Vector2D getOrigin()
+	public Vector3D getOrigin()
 	{
 		return this.origin.times(getScaling());
 	}
@@ -139,18 +139,18 @@ public class Sprite implements Handled
 	/**
 	 * @return How much the sprite is scaled to fill the forced dimensions
 	 */
-	public Vector2D getScaling()
+	public Vector3D getScaling()
 	{
 		if (this.forcedDimensions != null)
 			return getDimensions().dividedBy(getImageDimensions());
 		else
-			return Vector2D.identityVector();
+			return Vector3D.identityVector();
 	}
 	
 	/**
 	 * @return The size of the sprite
 	 */
-	public Vector2D getDimensions()
+	public Vector3D getDimensions()
 	{
 		if (this.forcedDimensions != null)
 			return this.forcedDimensions;
@@ -194,7 +194,7 @@ public class Sprite implements Handled
 	 * if you draw the sprite using another class, you must use the getXScale() 
 	 * and getYScale() -methods.
 	 */
-	public void forceDimensions(Vector2D newDimensions)
+	public void forceDimensions(Vector3D newDimensions)
 	{
 		this.forcedDimensions = newDimensions;
 	}
@@ -203,7 +203,7 @@ public class Sprite implements Handled
 	 * Permanently scales the sprite with the given modifiers
 	 * @param scaling How much the image is scaled
 	 */
-	public void scale(Vector2D scaling)
+	public void scale(Vector3D scaling)
 	{
 		// If there is not yet any forced scaling, initializes it
 		forceDimensions(getDimensions().times(scaling));
@@ -262,9 +262,9 @@ public class Sprite implements Handled
 		return filteredWith(op);
 	}
 	
-	private Vector2D getImageDimensions()
+	private Vector3D getImageDimensions()
 	{
-		return new Vector2D(getSubImage(0).getWidth(), getSubImage(0).getHeight());
+		return new Vector3D(getSubImage(0).getWidth(), getSubImage(0).getHeight());
 	}
 	
 	private Sprite filteredWith(BufferedImageOp op)

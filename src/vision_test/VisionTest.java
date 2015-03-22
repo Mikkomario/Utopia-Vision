@@ -17,7 +17,7 @@ import genesis_event.DrawableHandler;
 import genesis_event.HandlerRelay;
 import genesis_event.MouseListenerHandler;
 import genesis_util.DepthConstants;
-import genesis_util.Vector2D;
+import genesis_util.Vector3D;
 import genesis_video.GamePanel;
 import genesis_video.GameWindow;
 import arc_bank.GamePhaseBank;
@@ -61,9 +61,9 @@ public class VisionTest
 		// creates and writes a tilemap
 		System.out.println("Creates a randomly generated tilemap");
 		
-		TileMap map = new TileMap("test", DepthConstants.BOTTOM, new Vector2D(5, 4), 
-				new Vector2D(100, 100), new HandlerRelay());
-		map.setTrasformation(Transformation.transitionTransformation(new Vector2D(32, 32)));
+		TileMap map = new TileMap("test", DepthConstants.BOTTOM, new Vector3D(5, 4), 
+				new Vector3D(100, 100), new HandlerRelay());
+		map.setTrasformation(Transformation.transitionTransformation(new Vector3D(32, 32)));
 		
 		String[] spriteNames = {"belt", "mark", "close"};
 		Random random = new Random();
@@ -72,13 +72,13 @@ public class VisionTest
 		{
 			for (int y = 0; y < 4; y++)
 			{
-				map.setTile(new Vector2D(x, y), 
+				map.setTile(new Vector3D(x, y), 
 						spriteNames[random.nextInt(spriteNames.length)], 0, 
 						random.nextDouble() * 0.3);
 			}
 		}
 		
-		map.setTrasformation(map.getTransformation().withPosition(new Vector2D(100, 100)));
+		map.setTrasformation(map.getTransformation().withPosition(new Vector3D(100, 100)));
 		map.setTrasformation(map.getTransformation().plus(Transformation.rotationTransformation(5)));
 		
 		System.out.println("Writes the map");
@@ -90,7 +90,7 @@ public class VisionTest
 		FileOutputAccessor.closeWriter(fileWriter);
 		
 		// Creates the window and the superHandlers
-		GameWindow window = new GameWindow(new Vector2D(600, 500), "VisionTest", true, 
+		GameWindow window = new GameWindow(new Vector3D(600, 500), "VisionTest", true, 
 				120, 20);
 		GamePanel panel = window.getMainPanel().addGamePanel();
 		HandlerRelay superHandlers = new HandlerRelay();
@@ -109,7 +109,7 @@ public class VisionTest
 		
 		SimpleSingleSpriteDrawerObject testObject = new SimpleSingleSpriteDrawerObject(0, 
 				SpriteBank.getSprite("test", "spell").sharpened(), area.getHandlers());
-		testObject.setTrasformation(Transformation.transitionTransformation(new Vector2D(100, 100)));
+		testObject.setTrasformation(Transformation.transitionTransformation(new Vector3D(100, 100)));
 		
 		// Starts the first ares
 		area.start(false);

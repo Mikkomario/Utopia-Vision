@@ -7,7 +7,7 @@ import omega_util.Transformable;
 import vision_sprite.SpriteDrawer;
 import genesis_event.HandlerRelay;
 import genesis_util.StateOperator;
-import genesis_util.Vector2D;
+import genesis_util.Vector3D;
 
 /**
  * This class is a dependent drawer that uses sprites / spriteDrawers in the drawing process.
@@ -101,7 +101,7 @@ public class DependentSpriteDrawer<T extends Transformable & GameObject,
 	 * Changes the size of the drawn sprite to the given dimensions.
 	 * @param dimensions The dimensions given to the drawing
 	 */
-	public void scaleToSize(Vector2D dimensions)
+	public void scaleToSize(Vector3D dimensions)
 	{
 		//    W2 = S * W1
 		// -> S = W2 / W1

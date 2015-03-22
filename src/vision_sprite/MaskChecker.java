@@ -1,7 +1,7 @@
 package vision_sprite;
 
 import genesis_util.HelpMath;
-import genesis_util.Vector2D;
+import genesis_util.Vector3D;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -67,15 +67,15 @@ public class MaskChecker
 	 * needs to contain the relative point)
 	 * @return The refined relative collisionpoints
 	 */
-	public Vector2D[] getRefinedRelativeCollisionPoints(
-			Vector2D[] collisionpoints, int maskindex)
+	public Vector3D[] getRefinedRelativeCollisionPoints(
+			Vector3D[] collisionpoints, int maskindex)
 	{
 		// In case the mask is null (= not used), simply returns the same points
 		if (getMask() == null)
 			return collisionpoints;
 		
 		// Removes the collisionpoints that aren't in the mask
-		List<Vector2D> templist = new ArrayList<Vector2D>();
+		List<Vector3D> templist = new ArrayList<Vector3D>();
 		// Adds all the relevant points to the list
 		for (int i = 0; i < collisionpoints.length; i++)
 		{
@@ -83,7 +83,7 @@ public class MaskChecker
 				templist.add(collisionpoints[i]);
 		}
 		// Adds all points from the list to the table
-		Vector2D[] newpoints = new Vector2D[templist.size()];
+		Vector3D[] newpoints = new Vector3D[templist.size()];
 		for (int i = 0; i < templist.size(); i++)
 		{
 			newpoints[i] = templist.get(i);
@@ -100,7 +100,7 @@ public class MaskChecker
 	 * contains the point)
 	 * @return Does the mask contain the given point
 	 */
-	public boolean maskContainsRelativePoint(Vector2D relativep, int maskindex)
+	public boolean maskContainsRelativePoint(Vector3D relativep, int maskindex)
 	{		
 		// In case mask is not used (mask == null), always returns true
 		if (getMask() == null)
@@ -112,7 +112,7 @@ public class MaskChecker
 		
 		// Checks whether the point is within the mask and returns false if 
 		// it isn't
-		if (!HelpMath.pointIsInRange(relativep, Vector2D.zeroVector(), 
+		if (!HelpMath.pointIsInRange(relativep, Vector3D.zeroVector(), 
 				getMask().getDimensions()))
 			return false;
 

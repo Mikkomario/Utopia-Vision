@@ -1,6 +1,6 @@
 package vision_sprite;
 
-import genesis_util.Vector2D;
+import genesis_util.Vector3D;
 import arc_bank.Bank;
 import arc_bank.BankBank;
 import arc_bank.BankBankInitializer;
@@ -93,7 +93,7 @@ public class SpriteBank
 	 * @param bankName The name of the spriteBank that holds the sprites
 	 * @param scaling How much the sprites are scaled
 	 */
-	public static void scaleSprites(String bankName, Vector2D scaling)
+	public static void scaleSprites(String bankName, Vector3D scaling)
 	{
 		Bank<Sprite> spriteBank = getSpriteBank(bankName);
 		for (String spriteName : spriteBank.getContentNames())
@@ -143,7 +143,7 @@ public class SpriteBank
 			int imgnumber = 1;
 			int originx = -1;
 			int originy = -1;
-			Vector2D forcedDimensions = null;
+			Vector3D forcedDimensions = null;
 			
 			try
 			{
@@ -154,7 +154,7 @@ public class SpriteBank
 				if (arguments.length > 4)
 					originy = Integer.parseInt(arguments[4]);
 				if (arguments.length > 6)
-					forcedDimensions = new Vector2D(Integer.parseInt(arguments[5]), 
+					forcedDimensions = new Vector3D(Integer.parseInt(arguments[5]), 
 							Integer.parseInt(arguments[6]));
 			}
 			catch(NumberFormatException nfe)
@@ -164,7 +164,7 @@ public class SpriteBank
 			}
 			
 			// Creates the sprite
-			Sprite newSprite = new Sprite(arguments[1], imgnumber, new Vector2D(originx, 
+			Sprite newSprite = new Sprite(arguments[1], imgnumber, new Vector3D(originx, 
 					originy));
 			if (forcedDimensions != null)
 				newSprite.forceDimensions(forcedDimensions);

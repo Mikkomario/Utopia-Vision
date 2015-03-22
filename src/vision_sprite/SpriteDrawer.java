@@ -2,7 +2,7 @@ package vision_sprite;
 
 import genesis_event.Actor;
 import genesis_event.HandlerRelay;
-import genesis_util.Vector2D;
+import genesis_util.Vector3D;
 
 import java.awt.Graphics2D;
 import java.awt.geom.AffineTransform;
@@ -26,7 +26,7 @@ public abstract class SpriteDrawer extends DependentGameObject<GameObject> imple
 	
 	private double imageSpeed, imageIndex;
 	private AnimationListenerHandler listenerhandler;
-	private Vector2D forcedOrigin;
+	private Vector3D forcedOrigin;
 		
 		
 	// CONSTRUCTOR	-------------------------------------------------------
@@ -144,7 +144,7 @@ public abstract class SpriteDrawer extends DependentGameObject<GameObject> imple
 	/**
 	 * @return The origin / offset used when drawing the sprite
 	 */
-	public Vector2D getOrigin()
+	public Vector3D getOrigin()
 	{
 		if (this.forcedOrigin != null)
 			return this.forcedOrigin;
@@ -157,7 +157,7 @@ public abstract class SpriteDrawer extends DependentGameObject<GameObject> imple
 	 * @param origin The new origin to be used. Null means that the sprite's origin 
 	 * should be used (default)
 	 */
-	public void setOrigin(Vector2D origin)
+	public void setOrigin(Vector3D origin)
 	{
 		this.forcedOrigin = origin;
 	}
