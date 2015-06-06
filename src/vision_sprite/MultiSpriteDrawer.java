@@ -63,11 +63,11 @@ public class MultiSpriteDrawer extends SpriteDrawer
 	 */
 	public void setSpriteIndex(int newIndex, boolean resetImageIndex)
 	{
-		if (this.sprites == null || this.sprites.length == 0)
+		if (this.sprites == null || getSpriteAmount() == 0)
 			this.currentid = 0;
-		
 		// If the index is too large / small, loops through the list
-		this.currentid = Math.abs(newIndex % this.sprites.length);
+		else
+			this.currentid = Math.abs(newIndex % getSpriteAmount());
 		
 		if (resetImageIndex)
 			setImageIndex(0);
@@ -128,5 +128,24 @@ public class MultiSpriteDrawer extends SpriteDrawer
 	public void setKeyword(String keyword, int spriteindex)
 	{
 		this.keywords.put(keyword, spriteindex);
+	}
+	
+	/**
+	 * @return How many sprites are being used in this drawer
+	 */
+	public int getSpriteAmount()
+	{
+		return this.sprites.length;
+	}
+	
+	
+	// GETTERS & SETTERS	----------------------
+	
+	/**
+	 * @return The current sprite index
+	 */
+	public int getSpriteIndex()
+	{
+		return this.currentid;
 	}
 }
