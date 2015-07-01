@@ -86,21 +86,6 @@ public class SpriteBank
 	{
 		return getSpriteBank(bankName).get(spriteName);
 	}
-	
-	/**
-	 * Scales all the sprites in the given bank. This change is permanent and can only be 
-	 * undone with another scaling operation.
-	 * @param bankName The name of the spriteBank that holds the sprites
-	 * @param scaling How much the sprites are scaled
-	 */
-	public static void scaleSprites(String bankName, Vector3D scaling)
-	{
-		Bank<Sprite> spriteBank = getSpriteBank(bankName);
-		for (String spriteName : spriteBank.getContentNames())
-		{
-			spriteBank.get(spriteName).scale(scaling);
-		}
-	}
 
 	
 	// SUBCLASSES	-------------------------------
@@ -167,7 +152,7 @@ public class SpriteBank
 			Sprite newSprite = new Sprite(arguments[1], imgnumber, new Vector3D(originx, 
 					originy));
 			if (forcedDimensions != null)
-				newSprite.forceDimensions(forcedDimensions);
+				newSprite = newSprite.withDimensions(forcedDimensions);
 			
 			// And adds it to the bank
 			bank.put(arguments[0], newSprite);

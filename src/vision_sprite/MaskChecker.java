@@ -102,6 +102,7 @@ public class MaskChecker
 	 */
 	public boolean maskContainsRelativePoint(Vector3D relativep, int maskindex)
 	{		
+		// TODO: Should the origin be taken into account?
 		// In case mask is not used (mask == null), always returns true
 		if (getMask() == null)
 			return true;

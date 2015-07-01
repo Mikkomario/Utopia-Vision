@@ -186,27 +186,28 @@ public class Sprite implements Handled
 	}
 	
 	/**
-	 * Sets the sprite to have the given size.
+	 * Copies a sprite that has the given dimensions
 	 * 
 	 * @param newDimensions The new size of the sprite. Use null if you want to use the 
 	 * sprite's original size.
-	 * @notice This size is used when the sprite is drawn using a SpriteDrawer, 
-	 * if you draw the sprite using another class, you must use the getXScale() 
-	 * and getYScale() -methods.
+	 * @return A sprite with the given dimensions
 	 */
-	public void forceDimensions(Vector3D newDimensions)
+	public Sprite withDimensions(Vector3D newDimensions)
 	{
-		this.forcedDimensions = newDimensions;
+		Sprite s = new Sprite(this);
+		s.forcedDimensions = newDimensions;
+		return s;
 	}
 	
 	/**
-	 * Permanently scales the sprite with the given modifiers
-	 * @param scaling How much the image is scaled
+	 * Gives a sprite that is scaled from the original
+	 * @param scaling How much the sprite is scaled
+	 * @return A sprite that is scaled the given amount
 	 */
-	public void scale(Vector3D scaling)
+	public Sprite scaled(Vector3D scaling)
 	{
 		// If there is not yet any forced scaling, initializes it
-		forceDimensions(getDimensions().times(scaling));
+		return withDimensions(getDimensions().times(scaling));
 	}
 	
 	/**
