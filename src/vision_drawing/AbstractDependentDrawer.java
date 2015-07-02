@@ -175,4 +175,13 @@ public abstract class AbstractDependentDrawer<T extends Transformable & GameObje
 	{
 		setTrasformation(getOwnTransformation().plus(t));
 	}
+	
+	/**
+	 * Changes the operator that defines the drawer's visibility
+	 * @param operator The new operator that defines visibility
+	 */
+	public void setIsVisibleOperator(StateOperator operator)
+	{
+		this.isVisibleOperator = operator;
+	}
 }
