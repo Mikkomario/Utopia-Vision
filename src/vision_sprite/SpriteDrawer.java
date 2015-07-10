@@ -191,12 +191,14 @@ public abstract class SpriteDrawer extends DependentGameObject<GameObject> imple
 	{
 		AffineTransform lastTransform = g2d.getTransform();
 		
+		// Moves the sprite according to its origin
+		g2d.translate(-getOrigin().getFirst(), -getOrigin().getSecond());
+		
 		// Scales the sprite according to it's status
 		g2d.scale(getSprite().getScaling().getFirst(), getSprite().getScaling().getSecond());
 		
 		// Draws the sprite
-		g2d.drawImage(getSprite().getSubImage(imageindex), -getOrigin().getFirstInt(), 
-				-getOrigin().getSecondInt(), null);
+		g2d.drawImage(getSprite().getSubImage(imageindex), 0, 0, null);
 		
 		g2d.setTransform(lastTransform);
 	}

@@ -3,6 +3,8 @@ package vision_test;
 import java.io.BufferedWriter;
 import java.util.Random;
 
+import omega_util.SimpleGameObject;
+import omega_util.Transformable;
 import omega_util.Transformation;
 import exodus_util.ConstructableGameObject;
 import exodus_world.Area;
@@ -12,6 +14,7 @@ import exodus_world.AreaObjectConstructorProvider;
 import flow_io.FileOutputAccessor;
 import flow_recording.AbstractConstructor;
 import flow_recording.TextObjectWriter;
+import genesis_event.Actor;
 import genesis_event.ActorHandler;
 import genesis_event.DrawableHandler;
 import genesis_event.HandlerRelay;
@@ -108,8 +111,9 @@ public class VisionTest
 		Area area = AreaBank.getArea("test", "area1");
 		
 		SimpleSingleSpriteDrawerObject testObject = new SimpleSingleSpriteDrawerObject(0, 
-				SpriteBank.getSprite("test", "spell").sharpened(), area.getHandlers());
+				SpriteBank.getSprite("test", "spell").sharpened().scaled(new Vector3D(0.5, 2)), area.getHandlers());
 		testObject.setTrasformation(Transformation.transitionTransformation(new Vector3D(100, 100)));
+		new ObjectRotator(area.getHandlers(), testObject);
 		
 		// Starts the first ares
 		area.start(false);
@@ -117,6 +121,29 @@ public class VisionTest
 	
 	
 	// SUBCLASSES	-----------------------
+	
+	private static class ObjectRotator extends SimpleGameObject implements Actor
+	{
+		// ATTRIBUTES	-------------------
+		
+		private Transformable object;
+		
+		
+		// CONSTRUCTOR	-------------------
+		
+		public ObjectRotator(HandlerRelay handlers, Transformable obj)
+		{
+			super(handlers);
+			
+			this.object = obj;
+		}
+
+		@Override
+		public void act(double duration)
+		{
+			Transformable.transform(this.object, Transformation.rotationTransformation(duration));
+		}	
+	}
 	
 	private static class TestHandlerConstructor implements AreaHandlerConstructor
 	{

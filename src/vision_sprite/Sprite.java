@@ -129,7 +129,8 @@ public class Sprite implements Handled
 	// GETTERS & SETTERS	------------------------------------------------
 	
 	/**
-	 * @return The sprite's origin's coordinates (relative)
+	 * @return The sprite's origin's coordinates (relative). 
+	 * Notice that this is the scaled value.
 	 */
 	public Vector3D getOrigin()
 	{
