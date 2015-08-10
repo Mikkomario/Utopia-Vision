@@ -2,11 +2,13 @@ package vision_drawing;
 
 import java.awt.Graphics2D;
 
-import omega_util.GameObject;
-import omega_util.Transformable;
+import vision_sprite.MultiSpriteDrawer;
+import vision_sprite.SingleSpriteDrawer;
+import vision_sprite.Sprite;
 import vision_sprite.SpriteDrawer;
+import genesis_event.Handled;
 import genesis_event.HandlerRelay;
-import genesis_util.StateOperator;
+import genesis_util.Transformable;
 import genesis_util.Vector3D;
 
 /**
@@ -17,7 +19,7 @@ import genesis_util.Vector3D;
  * @param <T> The type of object using this drawer
  * @param <SpriteDrawerType> The type of SpriteDrawer this drawer uses
  */
-public class DependentSpriteDrawer<T extends Transformable & GameObject, 
+public class DependentSpriteDrawer<T extends Transformable & Handled, 
 		SpriteDrawerType extends SpriteDrawer> extends AbstractDependentDrawer<T>
 {
 	// ATTRIBUTES	-------------------------
@@ -31,25 +33,8 @@ public class DependentSpriteDrawer<T extends Transformable & GameObject,
 	 * Creates a new drawer
 	 * @param user The user that uses this drawer
 	 * @param initialDepth The depth the drawer uses initially
-	 * @param spriteDrawer The spriteDrawer used for drawing the sprite(s) (optional, 
-	 * can be added later with setSpriteDrawer())
-	 * @param handlers The handlers that will handle this drawer
-	 * @param isVisibleOperator The stateOperator that defines the visibility of this drawer
-	 */
-	public DependentSpriteDrawer(T user, int initialDepth, SpriteDrawerType spriteDrawer, 
-			HandlerRelay handlers, StateOperator isVisibleOperator)
-	{
-		super(user, initialDepth, handlers, isVisibleOperator);
-		
-		// Initializes attributes
-		this.spriteDrawer = spriteDrawer;
-	}
-	
-	/**
-	 * Creates a new drawer
-	 * @param user The user that uses this drawer
-	 * @param initialDepth The depth the drawer uses initially
-	 * @param spriteDrawer The spriteDrawer used for drawing the sprite(s)
+	 * @param spriteDrawer The spriteDrawer used for drawing the sprite(s). The drawer will 
+	 * be connected to this drawer.
 	 * @param handlers The handlers that will handle this drawer
 	 */
 	public DependentSpriteDrawer(T user, int initialDepth, SpriteDrawerType spriteDrawer, 
@@ -59,6 +44,9 @@ public class DependentSpriteDrawer<T extends Transformable & GameObject,
 		
 		// Initializes attributes
 		this.spriteDrawer = spriteDrawer;
+		
+		if (this.spriteDrawer != null)
+			this.spriteDrawer.setMaster(this);
 	}
 	
 	
@@ -107,5 +95,45 @@ public class DependentSpriteDrawer<T extends Transformable & GameObject,
 		// -> S = W2 / W1
 		setTrasformation(getOwnTransformation().withScaling(dimensions.dividedBy(
 				getSpriteDrawer().getSprite().getDimensions())));
+	}
+	
+	/**
+	 * Creates a new drawer that uses a single sprite drawer
+	 * @param user The object that uses the drawer
+	 * @param initialDepth The drawing depth used by the drawer
+	 * @param sprite The sprite used by the drawer
+	 * @param handlers The handlers that will handle the drawer
+	 * @return The drawer that was created
+	 */
+	public static <UserType extends Handled & Transformable> DependentSpriteDrawer<UserType, 
+			SingleSpriteDrawer> createSingleSpriteDrawer(UserType user, int initialDepth, 
+			Sprite sprite, HandlerRelay handlers)
+	{
+		DependentSpriteDrawer<UserType, SingleSpriteDrawer> drawer = 
+				new DependentSpriteDrawer<UserType, SingleSpriteDrawer>(user, initialDepth, 
+				null, handlers);
+		drawer.setSpriteDrawer(new SingleSpriteDrawer(sprite, drawer, handlers));
+		
+		return drawer;
+	}
+	
+	/**
+	 * Creates a new drawer that uses a single sprite drawer
+	 * @param user The object that uses the drawer
+	 * @param initialDepth The drawing depth used by the drawer
+	 * @param sprites The sprites used by the drawer
+	 * @param handlers The handlers that will handle the drawer
+	 * @return The drawer that was created
+	 */
+	public static <UserType extends Handled & Transformable> DependentSpriteDrawer<UserType, 
+			MultiSpriteDrawer> createMultiSpriteDrawer(UserType user, int initialDepth, 
+			Sprite[] sprites, HandlerRelay handlers)
+	{
+		DependentSpriteDrawer<UserType, MultiSpriteDrawer> drawer = 
+				new DependentSpriteDrawer<UserType, MultiSpriteDrawer>(user, initialDepth, 
+				null, handlers);
+		drawer.setSpriteDrawer(new MultiSpriteDrawer(sprites, drawer, handlers));
+		
+		return drawer;
 	}
 }

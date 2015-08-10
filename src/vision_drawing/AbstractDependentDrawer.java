@@ -4,13 +4,12 @@ import java.awt.AlphaComposite;
 import java.awt.Graphics2D;
 import java.awt.geom.AffineTransform;
 
-import omega_util.DependentGameObject;
-import omega_util.GameObject;
-import omega_util.Transformable;
-import omega_util.Transformation;
 import genesis_event.Drawable;
+import genesis_event.Handled;
 import genesis_event.HandlerRelay;
-import genesis_util.StateOperator;
+import genesis_util.ConnectedHandled;
+import genesis_util.Transformable;
+import genesis_util.Transformation;
 
 /**
  * An object can use a drawer to draw stuff on screen according to its transformation(s).
@@ -19,12 +18,11 @@ import genesis_util.StateOperator;
  * @since 5.12.2014
  * @param <T> The type of object that uses this drawer
  */
-public abstract class AbstractDependentDrawer<T extends Transformable & GameObject> extends 
-		DependentGameObject<T> implements Drawable, Transformable
+public abstract class AbstractDependentDrawer<T extends Transformable & Handled> extends 
+		ConnectedHandled<T> implements Drawable, Transformable
 {
 	// ATTRIBUTES	------------------------------
 	
-	private StateOperator isVisibleOperator;
 	private Transformation ownTransformation;
 	private int depth;
 	private float alpha;
@@ -44,27 +42,6 @@ public abstract class AbstractDependentDrawer<T extends Transformable & GameObje
 		super(user, handlers);
 		
 		// Initializes attributes
-		this.isVisibleOperator = null;
-		this.ownTransformation = new Transformation();
-		this.depth = initialDepth;
-		this.alpha = 1;
-	}
-	
-	/**
-	 * Creates a new drawer. The drawer's visibility can be handled individually.
-	 * @param user The user that will use the drawer. The drawer's activity 
-	 * will be tied to that of the user.
-	 * @param initialDepth How deep the drawer draws stuff
-	 * @param handlers The handlers that will handle the drawer.
-	 * @param isVisibleOperator The operator that defines the drawer's visibility.
-	 */
-	public AbstractDependentDrawer(T user, int initialDepth, HandlerRelay handlers, 
-			StateOperator isVisibleOperator)
-	{
-		super(user, handlers);
-		
-		// Initializes attributes
-		this.isVisibleOperator = isVisibleOperator;
 		this.ownTransformation = new Transformation();
 		this.depth = initialDepth;
 		this.alpha = 1;
@@ -101,15 +78,6 @@ public abstract class AbstractDependentDrawer<T extends Transformable & GameObje
 	public int getDepth()
 	{
 		return this.depth;
-	}
-
-	@Override
-	public StateOperator getIsVisibleStateOperator()
-	{
-		if (this.isVisibleOperator != null)
-			return this.isVisibleOperator;
-		else
-			return getMaster().getIsActiveStateOperator();
 	}
 
 	/**
@@ -174,14 +142,5 @@ public abstract class AbstractDependentDrawer<T extends Transformable & GameObje
 	public void addToOwnTransformation(Transformation t)
 	{
 		setTrasformation(getOwnTransformation().plus(t));
-	}
-	
-	/**
-	 * Changes the operator that defines the drawer's visibility
-	 * @param operator The new operator that defines visibility
-	 */
-	public void setIsVisibleOperator(StateOperator operator)
-	{
-		this.isVisibleOperator = operator;
 	}
 }

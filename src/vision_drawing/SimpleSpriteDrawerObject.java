@@ -1,10 +1,13 @@
 package vision_drawing;
 
-import omega_util.SimpleGameObject;
-import omega_util.Transformable;
-import omega_util.Transformation;
+import vision_sprite.MultiSpriteDrawer;
+import vision_sprite.SingleSpriteDrawer;
+import vision_sprite.Sprite;
 import vision_sprite.SpriteDrawer;
 import genesis_event.HandlerRelay;
+import genesis_util.SimpleHandled;
+import genesis_util.Transformable;
+import genesis_util.Transformation;
 
 /**
  * SimpleSpriteDrawerObjects can be transformed. They draw themselves using spriteDrawers.
@@ -14,7 +17,7 @@ import genesis_event.HandlerRelay;
  * @since 6.12.2014
  */
 public class SimpleSpriteDrawerObject<SpriteDrawerType extends SpriteDrawer> extends 
-		SimpleGameObject implements Transformable
+		SimpleHandled implements Transformable
 {
 	// ATTRIBUTES	-------------------------
 	
@@ -60,11 +63,19 @@ public class SimpleSpriteDrawerObject<SpriteDrawerType extends SpriteDrawer> ext
 	// GETTERS & SETTERS	--------------------------
 	
 	/**
-	 * @return The drawer used for drawing this object
+	 * @return The dependent drawer used for drawing this object
 	 */
 	public DependentSpriteDrawer<SimpleSpriteDrawerObject<SpriteDrawerType>, SpriteDrawerType> getDrawer()
 	{
 		return this.drawer;
+	}
+	
+	/**
+	 * @return The spriteDrawer used for drawing the object
+	 */
+	public SpriteDrawerType getSpriteDrawer()
+	{
+		return getDrawer().getSpriteDrawer();
 	}
 	
 	
@@ -86,5 +97,39 @@ public class SimpleSpriteDrawerObject<SpriteDrawerType extends SpriteDrawer> ext
 	public void setSpriteDrawer(SpriteDrawerType spriteDrawer)
 	{
 		getDrawer().setSpriteDrawer(spriteDrawer);
+	}
+	
+	/**
+	 * Creates a new sprite drawer object that uses a single sprite
+	 * @param initialDepth The drawing depth the object initially has
+	 * @param sprite The sprite the object uses to draw itself
+	 * @param handlers The handlers that will handle the object
+	 * @return The object that was created
+	 */
+	public static SimpleSpriteDrawerObject<SingleSpriteDrawer> createSingleSpriteDrawerObject(
+			int initialDepth, Sprite sprite, HandlerRelay handlers)
+	{
+		SimpleSpriteDrawerObject<SingleSpriteDrawer> drawer = new SimpleSpriteDrawerObject<>(
+				initialDepth, handlers);
+		drawer.setSpriteDrawer(new SingleSpriteDrawer(sprite, drawer, handlers));
+		
+		return drawer;
+	}
+	
+	/**
+	 * Creates a new sprite drawer object that uses multiple sprites
+	 * @param initialDepth The drawing depth the object initially has
+	 * @param sprites The sprites the object uses to draw itself
+	 * @param handlers The handlers that will handle the object
+	 * @return The object that was created
+	 */
+	public static SimpleSpriteDrawerObject<MultiSpriteDrawer> createMultiSpriteDrawerObject(
+			int initialDepth, Sprite[] sprites, HandlerRelay handlers)
+	{
+		SimpleSpriteDrawerObject<MultiSpriteDrawer> drawer = new SimpleSpriteDrawerObject<>(
+				initialDepth, handlers);
+		drawer.setSpriteDrawer(new MultiSpriteDrawer(sprites, drawer, handlers));
+		
+		return drawer;
 	}
 }

@@ -1,14 +1,13 @@
 package vision_sprite;
 
 import genesis_event.Actor;
+import genesis_event.Handled;
 import genesis_event.HandlerRelay;
+import genesis_util.ConnectedHandled;
 import genesis_util.Vector3D;
 
 import java.awt.Graphics2D;
 import java.awt.geom.AffineTransform;
-
-import omega_util.DependentGameObject;
-import omega_util.GameObject;
 
 /**
  * Spritedrawer is able to draw animated sprites for an object. Object's can 
@@ -20,7 +19,7 @@ import omega_util.GameObject;
  * @author Mikko Hilpinen.
  * @since 2.7.2013.
  */
-public abstract class SpriteDrawer extends DependentGameObject<GameObject> implements Actor
+public abstract class SpriteDrawer extends ConnectedHandled<Handled> implements Actor
 {
 	// ATTRIBUTES	-------------------------------------------------------
 	
@@ -38,7 +37,7 @@ public abstract class SpriteDrawer extends DependentGameObject<GameObject> imple
 	 * automatically die when the user dies. (Optional)
 	 * @param handlers The handlers that will be used in the animation process
 	 */
-	public SpriteDrawer(GameObject user, HandlerRelay handlers)
+	public SpriteDrawer(Handled user, HandlerRelay handlers)
 	{
 		super(user, handlers);
 		
@@ -213,9 +212,11 @@ public abstract class SpriteDrawer extends DependentGameObject<GameObject> imple
 	// Returns the imageindex to a valid value
 	private void checkImageIndex()
 	{
+		if (getSprite() == null)
+			return;
+		
 		int imageindexlast = getImageIndex();
 		
-		// TODO: Can apprarently throw a nullPointer exception in very rare circumstances
 		this.imageIndex = this.imageIndex % getSprite().getImageNumber();
 		
 		if (this.imageIndex < 0)

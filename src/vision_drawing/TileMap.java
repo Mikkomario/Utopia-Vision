@@ -5,14 +5,15 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import omega_util.SimpleGameObject;
-import omega_util.Transformable;
-import omega_util.Transformation;
+import vision_sprite.SingleSpriteDrawer;
 import vision_sprite.SpriteBank;
-import exodus_util.ConstructableGameObject;
+import exodus_util.ConstructableHandled;
 import flow_recording.Constructable;
 import flow_recording.Writable;
 import genesis_event.HandlerRelay;
+import genesis_util.SimpleHandled;
+import genesis_util.Transformable;
+import genesis_util.Transformation;
 import genesis_util.Vector3D;
 
 /**
@@ -22,8 +23,8 @@ import genesis_util.Vector3D;
  * @author Mikko Hilpinen
  * @since 6.12.2014
  */
-public class TileMap extends SimpleGameObject implements Transformable, Writable, 
-		ConstructableGameObject
+public class TileMap extends SimpleHandled implements Transformable, Writable, 
+		ConstructableHandled
 {
 	// ATTRIBUTES	-----------------------
 	
@@ -151,9 +152,9 @@ public class TileMap extends SimpleGameObject implements Transformable, Writable
 		if (this.construction != null)
 			this.construction.setID(id);
 	}
-
+	
 	@Override
-	public void setLink(String linkName, ConstructableGameObject target)
+	public void setLink(String linkName, ConstructableHandled target)
 	{
 		if (this.construction != null)
 			this.construction.setLink(linkName, target);
@@ -308,7 +309,7 @@ public class TileMap extends SimpleGameObject implements Transformable, Writable
 		}
 	}
 	
-	private static class Tile extends DependentSingleSpriteDrawer<TileMap>
+	private static class Tile extends DependentSpriteDrawer<TileMap, SingleSpriteDrawer>
 	{
 		// ATTRIBUTES	----------------------------
 		
@@ -321,8 +322,8 @@ public class TileMap extends SimpleGameObject implements Transformable, Writable
 		public Tile(TileMap user, int initialDepth, String spriteBankName, String spriteName, 
 				double imageSpeed, int imageIndex, Vector3D tileSize, HandlerRelay handlers)
 		{
-			super(user, initialDepth, SpriteBank.getSprite(spriteBankName, spriteName), 
-					handlers);
+			super(user, initialDepth, new SingleSpriteDrawer(SpriteBank.getSprite(
+					spriteBankName, spriteName), null, handlers), handlers);
 			
 			this.startImageIndex = imageIndex;
 			this.spriteName = spriteName;
@@ -336,8 +337,8 @@ public class TileMap extends SimpleGameObject implements Transformable, Writable
 		public Tile(TileMap user, String spriteBankName, int depth, Vector3D tileSize, 
 				String[] tileArguments, HandlerRelay handlers)
 		{
-			super(user, depth, SpriteBank.getSprite(spriteBankName, tileArguments[2]), 
-					handlers);
+			super(user, depth, new SingleSpriteDrawer(SpriteBank.getSprite(spriteBankName, 
+					tileArguments[2]), null, handlers), handlers);
 			
 			this.startImageIndex = Integer.parseInt(tileArguments[0]);
 			getSpriteDrawer().setImageIndex(this.startImageIndex);

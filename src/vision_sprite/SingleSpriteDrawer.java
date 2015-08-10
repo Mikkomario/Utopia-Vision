@@ -1,6 +1,6 @@
 package vision_sprite;
 
-import omega_util.GameObject;
+import genesis_event.Handled;
 import genesis_event.HandlerRelay;
 
 /**
@@ -26,7 +26,7 @@ public class SingleSpriteDrawer extends SpriteDrawer
 	 * automatically die when the user dies. (Optional) 
 	 * @param handlers The handlers that will handle (animate) this drawer
 	 */
-	public SingleSpriteDrawer(Sprite sprite, GameObject user, HandlerRelay handlers)
+	public SingleSpriteDrawer(Sprite sprite, Handled user, HandlerRelay handlers)
 	{
 		super(user, handlers);
 

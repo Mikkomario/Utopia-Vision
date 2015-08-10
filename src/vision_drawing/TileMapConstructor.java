@@ -1,6 +1,6 @@
 package vision_drawing;
 
-import exodus_util.ConstructableGameObject;
+import exodus_util.ConstructableHandled;
 import flow_recording.AbstractConstructor;
 import genesis_event.HandlerRelay;
 
@@ -10,7 +10,7 @@ import genesis_event.HandlerRelay;
  * @author Mikko Hilpinen
  * @since 7.12.2014
  */
-public class TileMapConstructor extends AbstractConstructor<ConstructableGameObject>
+public class TileMapConstructor extends AbstractConstructor<ConstructableHandled>
 {
 	// ATTRIBUTES	-------------------------------
 	

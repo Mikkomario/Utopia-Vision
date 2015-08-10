@@ -2,7 +2,7 @@ package vision_sprite;
 
 import java.util.HashMap;
 
-import omega_util.GameObject;
+import genesis_event.Handled;
 import genesis_event.HandlerRelay;
 
 /**
@@ -31,7 +31,7 @@ public class MultiSpriteDrawer extends SpriteDrawer
 	 * automatically die when the user dies.
 	 * @param handlers The handlers that will handle (animate) this drawer
 	 */
-	public MultiSpriteDrawer(Sprite[] sprites, GameObject user, HandlerRelay handlers)
+	public MultiSpriteDrawer(Sprite[] sprites, Handled user, HandlerRelay handlers)
 	{
 		super(user, handlers);
 		

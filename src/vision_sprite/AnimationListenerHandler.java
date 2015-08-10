@@ -69,7 +69,6 @@ public class AnimationListenerHandler extends Handler<AnimationListener> impleme
 	protected boolean handleObject(AnimationListener h)
 	{
 		// Informs the onject about the animation event
-		// TODO: Use stateOperators?
 		h.onAnimationEnd(this.lastdrawer);
 		
 		return true;
@@ -81,7 +80,7 @@ public class AnimationListenerHandler extends Handler<AnimationListener> impleme
 		// Remembers the data
 		this.lastdrawer = spritedrawer;
 		// Informs all listeners about the event
-		handleObjects();
+		handleObjects(true);
 		this.lastdrawer = null;
 	}
 }

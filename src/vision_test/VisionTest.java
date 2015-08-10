@@ -3,10 +3,7 @@ package vision_test;
 import java.io.BufferedWriter;
 import java.util.Random;
 
-import omega_util.SimpleGameObject;
-import omega_util.Transformable;
-import omega_util.Transformation;
-import exodus_util.ConstructableGameObject;
+import exodus_util.ConstructableHandled;
 import exodus_world.Area;
 import exodus_world.AreaBank;
 import exodus_world.AreaHandlerConstructor;
@@ -20,14 +17,18 @@ import genesis_event.DrawableHandler;
 import genesis_event.HandlerRelay;
 import genesis_event.MouseListenerHandler;
 import genesis_util.DepthConstants;
+import genesis_util.SimpleHandled;
+import genesis_util.Transformable;
+import genesis_util.Transformation;
 import genesis_util.Vector3D;
 import genesis_video.GamePanel;
 import genesis_video.GameWindow;
 import arc_bank.GamePhaseBank;
 import arc_resource.ResourceActivator;
-import vision_drawing.SimpleSingleSpriteDrawerObject;
+import vision_drawing.SimpleSpriteDrawerObject;
 import vision_drawing.TileMap;
 import vision_drawing.TileMapConstructor;
+import vision_sprite.SingleSpriteDrawer;
 import vision_sprite.SpriteBank;
 
 /**
@@ -110,8 +111,10 @@ public class VisionTest
 		// Creates a test object as well
 		Area area = AreaBank.getArea("test", "area1");
 		
-		SimpleSingleSpriteDrawerObject testObject = new SimpleSingleSpriteDrawerObject(0, 
-				SpriteBank.getSprite("test", "spell").sharpened().scaled(new Vector3D(0.5, 2)), area.getHandlers());
+		SimpleSpriteDrawerObject<SingleSpriteDrawer> testObject = 
+				SimpleSpriteDrawerObject.createSingleSpriteDrawerObject(0, 
+				SpriteBank.getSprite("test", "spell").sharpened().scaled(new Vector3D(0.5, 2)), 
+				area.getHandlers());
 		testObject.setTrasformation(Transformation.transitionTransformation(new Vector3D(100, 100)));
 		new ObjectRotator(area.getHandlers(), testObject);
 		
@@ -122,7 +125,7 @@ public class VisionTest
 	
 	// SUBCLASSES	-----------------------
 	
-	private static class ObjectRotator extends SimpleGameObject implements Actor
+	private static class ObjectRotator extends SimpleHandled implements Actor
 	{
 		// ATTRIBUTES	-------------------
 		
@@ -176,10 +179,10 @@ public class VisionTest
 	}
 	
 	private static class TestObjectConstructorProvider implements 
-			AreaObjectConstructorProvider<ConstructableGameObject>
+			AreaObjectConstructorProvider<ConstructableHandled>
 	{
 		@Override
-		public AbstractConstructor<ConstructableGameObject> getConstructor(
+		public AbstractConstructor<ConstructableHandled> getConstructor(
 				Area targetArea)
 		{
 			return new TileMapConstructor(targetArea.getHandlers());

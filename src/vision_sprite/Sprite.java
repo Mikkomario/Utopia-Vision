@@ -1,7 +1,7 @@
 package vision_sprite;
 
-import genesis_event.Handled;
 import genesis_util.HelpMath;
+import genesis_util.Killable;
 import genesis_util.StateOperator;
 import genesis_util.Vector3D;
 
@@ -26,7 +26,7 @@ import arc_bank.ResourceInitializationException;
  * @author Mikko Hilpinen.
  * @since 27.11.2012.
  */
-public class Sprite implements Handled
+public class Sprite implements Killable
 {	
 	// ATTRIBUTES	-------------------------------------------------------
 	
