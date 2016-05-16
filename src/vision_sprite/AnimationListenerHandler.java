@@ -59,6 +59,9 @@ public class AnimationListenerHandler extends Handler<AnimationListener> impleme
 	
 	// IMPLEMENTED METHODS	---------------------------------------------
 
+	// TODO: Create new animation events (animation started, animation stopped, image changed, 
+	// cycle looped, even sprite changed for multi sprite drawers?)
+	
 	@Override
 	public HandlerType getHandlerType()
 	{

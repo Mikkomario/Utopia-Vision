@@ -19,6 +19,7 @@ public class MultiSpriteDrawer extends SpriteDrawer
 	private Sprite[] sprites;
 	private int currentid;
 	private HashMap<String, Integer> keywords;
+	// TODO: Use model with sprites or something?
 	
 	
 	// CONSTRUCTOR	-----------------------------------------------------
@@ -88,6 +89,7 @@ public class MultiSpriteDrawer extends SpriteDrawer
 		// Only works if the keyword has been created
 		if (!this.keywords.containsKey(keyword))
 		{
+			// TODO: Throw a real exception
 			System.err.println("The spritedrawer doesn't have the keyword " + keyword);
 			return;
 		}
@@ -105,6 +107,7 @@ public class MultiSpriteDrawer extends SpriteDrawer
 	{
 		setSpriteIndex(this.currentid + 1, resetImageIndex);
 	}
+	// TODO: Rename these
 	
 	/**
 	 * Changes the shown sprite to the last one in the table. If the start of 
@@ -128,7 +131,7 @@ public class MultiSpriteDrawer extends SpriteDrawer
 	public void setKeyword(String keyword, int spriteindex)
 	{
 		this.keywords.put(keyword, spriteindex);
-	}
+	} // TODO: Rename, perhaps remove
 	
 	/**
 	 * @return How many sprites are being used in this drawer
@@ -136,7 +139,7 @@ public class MultiSpriteDrawer extends SpriteDrawer
 	public int getSpriteAmount()
 	{
 		return this.sprites.length;
-	}
+	} // TODO: Rename
 	
 	
 	// GETTERS & SETTERS	----------------------
@@ -147,5 +150,5 @@ public class MultiSpriteDrawer extends SpriteDrawer
 	public int getSpriteIndex()
 	{
 		return this.currentid;
-	}
+	} // TODO: Rename
 }

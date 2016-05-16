@@ -24,11 +24,12 @@ import genesis_util.Vector3D;
  * @since 6.12.2014
  */
 public class TileMap extends SimpleHandled implements Transformable, Writable, 
-		ConstructableHandled
+		ConstructableHandled // TODO: Why not implement drawable and draw the tiles?
 {
+	// TODO: Remove any constructable implementation
 	// ATTRIBUTES	-----------------------
 	
-	private String spriteBankName;
+	private String spriteBankName; // TODO: Not needed. Tiles should use sprites (from any bank)
 	private Tile[][] tiles;
 	private Vector3D tileSize;
 	private Transformation transformation;
@@ -49,6 +50,7 @@ public class TileMap extends SimpleHandled implements Transformable, Writable,
 	 * @param tileSize How large each tile should be
 	 * @param handlers The handlers that will handle this map
 	 */
+	// TODO: Tileamounts should be pair or two integers
 	public TileMap(String spriteBankName, int depth, Vector3D tileAmounts, Vector3D tileSize, 
 			HandlerRelay handlers)
 	{
@@ -177,7 +179,7 @@ public class TileMap extends SimpleHandled implements Transformable, Writable,
 		setTile(position, new Tile(this, this.depth, this.spriteBankName, tileSpriteName, 
 				animationSpeed, imageIndex, this.tileSize, this.handlers));
 	}
-	
+	// TODO: Make this the primary setter?
 	private void setTile(Vector3D position, Tile tile)
 	{
 		// If there already is a tile at the given position, removes it
@@ -309,12 +311,14 @@ public class TileMap extends SimpleHandled implements Transformable, Writable,
 		}
 	}
 	
+	// TODO: Remove dependent implementation, keep tile as a struct and draw in tilemap
+	// TODO: Make this class public and create a data type for it
 	private static class Tile extends DependentSpriteDrawer<TileMap, SingleSpriteDrawer>
 	{
 		// ATTRIBUTES	----------------------------
 		
 		private int startImageIndex;
-		private String spriteName;
+		private String spriteName; // TODO: Have the actual sprite here + animation speed
 		
 		
 		// CONSTRUCTOR	----------------------------
@@ -333,6 +337,7 @@ public class TileMap extends SimpleHandled implements Transformable, Writable,
 			scaleToSize(tileSize);
 		}
 		
+		// TODO: Remove
 		// Use split(",") to get the tileArguments
 		public Tile(TileMap user, String spriteBankName, int depth, Vector3D tileSize, 
 				String[] tileArguments, HandlerRelay handlers)
@@ -351,6 +356,7 @@ public class TileMap extends SimpleHandled implements Transformable, Writable,
 		
 		// IMPLEMENTED METHODS	--------------------
 		
+		// TODO: Remove
 		@Override
 		public String toString()
 		{

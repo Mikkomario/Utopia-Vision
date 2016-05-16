@@ -21,6 +21,8 @@ import genesis_util.Transformation;
 public abstract class AbstractDependentDrawer<T extends Transformable & Handled> extends 
 		ConnectedHandled<T> implements Drawable, Transformable
 {
+	// TODO: Move to genesis
+	
 	// ATTRIBUTES	------------------------------
 	
 	private Transformation ownTransformation;
@@ -64,6 +66,7 @@ public abstract class AbstractDependentDrawer<T extends Transformable & Handled>
 	@Override
 	public void drawSelf(Graphics2D g2d)
 	{
+		// TODO: Only set this if alpha != 1
 		g2d.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, getAlpha()));
 		
 		AffineTransform lastTransform = g2d.getTransform();
@@ -72,6 +75,8 @@ public abstract class AbstractDependentDrawer<T extends Transformable & Handled>
 		drawSelfBasic(g2d);
 		
 		g2d.setTransform(lastTransform);
+		
+		// TODO: Return the alpha to its original value
 	}
 
 	@Override
@@ -92,6 +97,7 @@ public abstract class AbstractDependentDrawer<T extends Transformable & Handled>
 	@Override
 	public Transformation getTransformation()
 	{
+		// TODO: Return own transformation here, create a separate method for combined transformation
 		return getMaster().getTransformation().transform(getOwnTransformation());
 	}
 
@@ -121,7 +127,7 @@ public abstract class AbstractDependentDrawer<T extends Transformable & Handled>
 		this.alpha = alpha;
 		
 		if (getAlpha() < 0)
-			setAlpha(0);
+			setAlpha(0); // TODO: Just use this.alpha =
 		if (getAlpha() > 1)
 			setAlpha(1);
 	}
@@ -139,7 +145,7 @@ public abstract class AbstractDependentDrawer<T extends Transformable & Handled>
 	 * Modifies the drawer's own transformation according to the given transformation
 	 * @param t How the drawer's transformation is transformed
 	 */
-	public void addToOwnTransformation(Transformation t)
+	public void addToOwnTransformation(Transformation t) // TODO: Rename to transform
 	{
 		setTrasformation(getOwnTransformation().plus(t));
 	}

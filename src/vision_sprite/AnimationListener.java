@@ -13,6 +13,7 @@ import genesis_event.Handled;
  */
 public interface AnimationListener extends Handled
 {
+	// TODO: Add new animation events + event selector
 	/**
 	 * This method is called when an animation of the sprite ends or, more 
 	 * precisely, a cycle in the animation ends.

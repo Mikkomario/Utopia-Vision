@@ -32,8 +32,10 @@ public class Sprite implements Killable
 	
 	private BufferedImage[] images;
 	
-	private Vector3D origin, forcedDimensions;
+	// TODO: Remove killable implementation
+	private Vector3D origin, forcedDimensions; // TODO: Use scaling instead of size
 	private StateOperator isDeadStateOperator;
+	// TODO: Add blurred, sharpened, luminosity attributes, keep the original image + modified image
 	
 	
 	// CONSTRUCTOR	-------------------------------------------------------
@@ -52,14 +54,15 @@ public class Sprite implements Killable
 	{
 		// Checks the variables
 		if (filename == null || numberOfImages <= 0)
-			throw new IllegalArgumentException();
+			throw new IllegalArgumentException(); // TODO: Throw fileNotFound instead, use 1 as min
 		
 		// Initializes attributes
 		this.origin = origin;
 		this.isDeadStateOperator = new StateOperator(false, true);
-		this.forcedDimensions = null;
+		this.forcedDimensions = null; // TODO: Should be included in a constructor
 		
 		// Loads the image
+		// TODO: Don't do this, ever
 		File img = new File("data/" + filename);
 		BufferedImage strip = null;
 		
@@ -69,6 +72,7 @@ public class Sprite implements Killable
 		}
 		catch (IOException ioe)
 		{
+			// TODO: Just throw the io exception
 			throw new ResourceInitializationException("Failed to load the image data/" + 
 					filename);
 		}
@@ -89,7 +93,7 @@ public class Sprite implements Killable
 		}
 		
 		// If an origin position was set to -1, sets it to the middle of the 
-		// sprite
+		// sprite // TODO: Rather replace null
 		double origX = getOrigin().getFirst();
 		double origY = getOrigin().getSecond();
 		
@@ -151,7 +155,7 @@ public class Sprite implements Killable
 	/**
 	 * @return The size of the sprite
 	 */
-	public Vector3D getDimensions()
+	public Vector3D getDimensions() // TODO: Rename
 	{
 		if (this.forcedDimensions != null)
 			return this.forcedDimensions;
@@ -181,7 +185,7 @@ public class Sprite implements Killable
 	{
 		// Checks the given index and adjusts it if needed
 		if (imageIndex < 0 || imageIndex >= this.images.length)
-			imageIndex = Math.abs(imageIndex % this.images.length);
+			imageIndex = Math.abs(imageIndex % this.images.length); // TODO: Doesn't work correctly with negative values
 		
 		return this.images[imageIndex];
 	}
@@ -193,7 +197,7 @@ public class Sprite implements Killable
 	 * sprite's original size.
 	 * @return A sprite with the given dimensions
 	 */
-	public Sprite withDimensions(Vector3D newDimensions)
+	public Sprite withDimensions(Vector3D newDimensions) // TODO: Rename. Create another method for original size
 	{
 		Sprite s = new Sprite(this);
 		s.forcedDimensions = newDimensions;
@@ -250,6 +254,7 @@ public class Sprite implements Killable
 	{
 		float[] scales = {scale, scale, scale, 1.0f};
 		float[] offsets = {0, 0, 0, 0};
+		// TODO: Length of 1 should suffice here
 		RescaleOp op = new RescaleOp(scales, offsets, null);
 	    return filteredWith(op);
 	}
@@ -264,7 +269,7 @@ public class Sprite implements Killable
 		return filteredWith(op);
 	}
 	
-	private Vector3D getImageDimensions()
+	private Vector3D getImageDimensions() // TODO: Rename
 	{
 		return new Vector3D(getSubImage(0).getWidth(), getSubImage(0).getHeight());
 	}

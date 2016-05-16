@@ -67,6 +67,7 @@ public class MaskChecker
 	 * needs to contain the relative point)
 	 * @return The refined relative collisionpoints
 	 */
+	// TODO: Replace with lists
 	public Vector3D[] getRefinedRelativeCollisionPoints(
 			Vector3D[] collisionpoints, int maskindex)
 	{

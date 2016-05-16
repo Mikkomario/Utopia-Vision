@@ -45,7 +45,7 @@ public class DependentSpriteDrawer<T extends Transformable & Handled,
 		// Initializes attributes
 		this.spriteDrawer = spriteDrawer;
 		
-		if (this.spriteDrawer != null)
+		if (this.spriteDrawer != null) // TODO: Never use this on a constructor like this
 			this.spriteDrawer.setMaster(this);
 	}
 	
@@ -105,6 +105,7 @@ public class DependentSpriteDrawer<T extends Transformable & Handled,
 	 * @param handlers The handlers that will handle the drawer
 	 * @return The drawer that was created
 	 */
+	// TODO: Remove these methods
 	public static <UserType extends Handled & Transformable> DependentSpriteDrawer<UserType, 
 			SingleSpriteDrawer> createSingleSpriteDrawer(UserType user, int initialDepth, 
 			Sprite sprite, HandlerRelay handlers)
@@ -112,6 +113,7 @@ public class DependentSpriteDrawer<T extends Transformable & Handled,
 		DependentSpriteDrawer<UserType, SingleSpriteDrawer> drawer = 
 				new DependentSpriteDrawer<UserType, SingleSpriteDrawer>(user, initialDepth, 
 				null, handlers);
+		// TODO: This is why you don't add the master to the constructor
 		drawer.setSpriteDrawer(new SingleSpriteDrawer(sprite, drawer, handlers));
 		
 		return drawer;

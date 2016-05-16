@@ -10,6 +10,7 @@ import genesis_event.HandlerRelay;
  * @author Mikko Hilpinen
  * @since 7.12.2014
  */
+// TODO: Remove
 public class TileMapConstructor extends AbstractConstructor<ConstructableHandled>
 {
 	// ATTRIBUTES	-------------------------------

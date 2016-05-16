@@ -16,6 +16,7 @@ import arc_bank.ResourceInitializationException;
  */
 public class SpriteBank
 {
+	// TODO: Replace with new arc classes
 	// CONSTRUCTOR	-------------------------------
 	
 	private SpriteBank()

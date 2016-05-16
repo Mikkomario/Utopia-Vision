@@ -21,6 +21,8 @@ import java.awt.geom.AffineTransform;
  */
 public abstract class SpriteDrawer extends ConnectedHandled<Handled> implements Actor
 {
+	// TODO: Make the user call animation instead. Remove handled and actor implementations
+	
 	// ATTRIBUTES	-------------------------------------------------------
 	
 	private double imageSpeed, imageIndex;
@@ -102,7 +104,7 @@ public abstract class SpriteDrawer extends ConnectedHandled<Handled> implements 
 	 *
 	 * @param duration How many steps will a single animation cycle last
 	 */
-	public void setAnimationDuration(int duration)
+	public void setAnimationDuration(int duration) // TODO: Parameter should be double
 	{
 		// Checks the argument
 		if (duration == 0)
@@ -210,7 +212,7 @@ public abstract class SpriteDrawer extends ConnectedHandled<Handled> implements 
 	}
 	
 	// Returns the imageindex to a valid value
-	private void checkImageIndex()
+	private void checkImageIndex() // TODO: Refactor (should take the new index as parameter and set it)
 	{
 		if (getSprite() == null)
 			return;

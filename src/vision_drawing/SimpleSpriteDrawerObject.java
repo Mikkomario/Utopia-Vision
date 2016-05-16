@@ -39,6 +39,8 @@ public class SimpleSpriteDrawerObject<SpriteDrawerType extends SpriteDrawer> ext
 	{
 		super(handlers);
 		
+		// TODO: No sprite drawer in the constructor?
+		
 		// Initializes attributes
 		this.transformation = new Transformation();
 		this.drawer = new DependentSpriteDrawer<>(this, initialDepth, null, handlers);
