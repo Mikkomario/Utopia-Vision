@@ -10,6 +10,7 @@ import genesis_event.HandlerRelay;
 import genesis_util.ConnectedHandled;
 import genesis_util.Transformable;
 import genesis_util.Transformation;
+import utopia.genesis.util.DependentDrawer;
 
 /**
  * An object can use a drawer to draw stuff on screen according to its transformation(s).
@@ -17,6 +18,7 @@ import genesis_util.Transformation;
  * @author Mikko Hilpinen
  * @since 5.12.2014
  * @param <T> The type of object that uses this drawer
+ * @deprecated Replaced with {@link DependentDrawer}
  */
 public abstract class AbstractDependentDrawer<T extends Transformable & Handled> extends 
 		ConnectedHandled<T> implements Drawable, Transformable
