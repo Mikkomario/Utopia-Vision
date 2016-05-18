@@ -24,6 +24,20 @@ public class Sprite
 {	
 	// ATTRIBUTES	-------------------------------------------------------
 	
+	private static final float[] SHARPEN = new float[]
+	{
+	     0.0f, -1.0f, 0.0f,
+	    -1.0f, 5.0f, -1.0f,
+	     0.0f, -1.0f, 0.0f
+	};
+	private static final float[] BLUR = new float[]
+	{
+		0.05f, 0.15f, 0.05f,
+		0.15f, 0.2f, 0.15f, 
+		0.05f, 0.15f, 0.05f
+	};
+	
+	
 	private BufferedImage[] images, originalImages;
 	private Vector3D origin, originalSize;
 	
@@ -99,7 +113,7 @@ public class Sprite
 	}
 	
 	/**
-	 * @return How much the sprite is scaled from the original version
+	 * @return How much the sprite should be scaled when drawn
 	 */
 	public Vector3D getScaling()
 	{
@@ -107,7 +121,7 @@ public class Sprite
 	}
 	
 	/**
-	 * @return The size of the sprite
+	 * @return The size of the sprite (includes scaling)
 	 */
 	public Vector3D getSize()
 	{
@@ -162,56 +176,62 @@ public class Sprite
 	}
 	
 	/**
-	 * Copies a sprite that has the given dimensions
-	 * 
-	 * @param newDimensions The new size of the sprite. Use null if you want to use the 
-	 * sprite's original size.
-	 * @return A sprite with the given dimensions
+	 * Creates a new sprite with different size
+	 * @param size The size of the new sprite
+	 * @return A sprite with the given size
 	 */
-	public Sprite withDimensions(Vector3D newDimensions) // TODO: Rename. Create another method for original size
+	public Sprite withSize(Vector3D size)
 	{
-		Sprite s = new Sprite(this);
-		s.forcedDimensions = newDimensions;
-		return s;
+		return withScaling(size.dividedBy(this.originalSize));
 	}
 	
 	/**
-	 * Gives a sprite that is scaled from the original
+	 * Creates a scaled version of this sprite
+	 * @param scaling The scaling applied to the sprite
+	 * @return A sprite with different scaling
+	 */
+	public Sprite withScaling(Vector3D scaling)
+	{
+		Sprite sprite = new Sprite(this);
+		sprite.scaling = scaling;
+		return sprite;
+	}
+	
+	/**
+	 * Creates a scaled version of this sprite
 	 * @param scaling How much the sprite is scaled
-	 * @return A sprite that is scaled the given amount
+	 * @return A scaled sprite
 	 */
 	public Sprite scaled(Vector3D scaling)
 	{
-		// If there is not yet any forced scaling, initializes it
-		return withDimensions(getDimensions().times(scaling));
+		return withScaling(getScaling().times(scaling));
 	}
 	
 	/**
+	 * @param amount How many sharpening iterations are performed
 	 * @return A sharpened version of this sprite
 	 */
-	public Sprite sharpened()
+	public Sprite sharpened(int amount)
 	{
-		// Creates the sharpening kernel
-		float[] sharpen = new float[] {
-			     0.0f, -1.0f, 0.0f,
-			    -1.0f, 5.0f, -1.0f,
-			     0.0f, -1.0f, 0.0f
-				};
-		return convolve(sharpen, 3, 3);
+		if (amount == 0)
+			return this;
+		else
+		{
+			Sprite sprite = new Sprite(this);
+			sprite.sharpness += amount;
+			sprite.modifyImages();
+			
+			return sprite;
+		}
 	}
 	
 	/**
+	 * @param amount How many blurring iterations are performed
 	 * @return A blurred version of this sprite
 	 */
-	public Sprite blurred()
+	public Sprite blurred(int amount)
 	{
-		float[] blur = new float[] {
-				0.05f, 0.15f, 0.05f,
-				0.15f, 0.2f, 0.15f, 
-				0.05f, 0.15f, 0.05f
-				};
-		
-		return convolve(blur, 3, 3);
+		return sharpened(-amount);
 	}
 	
 	/**
@@ -223,34 +243,16 @@ public class Sprite
 	 */
 	public Sprite withLuminosity(float scale)
 	{
-		float[] scales = {scale, scale, scale, 1.0f};
-		float[] offsets = {0, 0, 0, 0};
-		// TODO: Length of 1 should suffice here
-		RescaleOp op = new RescaleOp(scales, offsets, null);
-	    return filteredWith(op);
-	}
-	
-	private Sprite convolve(float[] data, int kernelWidth, int kernelHeight)
-	{
-		// Creates the operation
-		ConvolveOp op = new ConvolveOp(new Kernel(kernelWidth, kernelHeight, data), 
-				ConvolveOp.EDGE_NO_OP, null);
-		
-		// Creates the sharpened sprite and returns it
-		return filteredWith(op);
-	}
-	
-	// TODO: Make this static, return bufferedimage
-	private Sprite filteredWith(BufferedImageOp op)
-	{
-		Sprite newSprite = new Sprite(this);
-		
-		for (int i = 0; i < this.images.length; i++)
+		if (this.luminosity == scale)
+			return this;
+		else
 		{
-			newSprite.images[i] = op.filter(this.images[i], null);
+			Sprite sprite = new Sprite(this);
+			sprite.luminosity = scale;
+			sprite.modifyImages();
+			
+			return sprite;
 		}
-		
-		return newSprite;
 	}
 	
 	private void modifyImages()
@@ -259,13 +261,53 @@ public class Sprite
 		{
 			BufferedImage image = this.originalImages[i];
 			
+			// Sets sharpness
 			for (int iteration = 0; iteration < Math.abs(getSharpness()); iteration++)
 			{
-				// TODO: Process images
-				//if (getSharpness() < 0)
-				//	image = 
+				if (getSharpness() < 0)
+					image = blur(image);
+				else
+					image = sharpen(image);
 			}
+			
+			// Sets luminosity
+			if (this.luminosity != 1)
+				image = setLuminosity(image, this.luminosity);
+			
+			this.images[i] = image;
 		}
+	}
+	
+	private static BufferedImage sharpen(BufferedImage image)
+	{
+		return convolve(image, SHARPEN, 3, 3);
+	}
+	
+	private static BufferedImage blur(BufferedImage image)
+	{
+		return convolve(image, BLUR, 3, 3);
+	}
+	
+	private static BufferedImage setLuminosity(BufferedImage image, float scale)
+	{
+		float[] scales = {scale};//{scale, scale, scale, 1.0f};
+		float[] offsets = {0};//{0, 0, 0, 0};
+	    return filter(image, new RescaleOp(scales, offsets, null));
+	}
+	
+	private static BufferedImage convolve(BufferedImage image, float[] data, int kernelWidth, int kernelHeight)
+	{
+		// Creates the operation
+		ConvolveOp op = new ConvolveOp(new Kernel(kernelWidth, kernelHeight, data), 
+				ConvolveOp.EDGE_NO_OP, null);
+		
+		// Creates the sharpened sprite and returns it
+		return filter(image, op);
+	}
+	
+	private static BufferedImage filter(BufferedImage image, BufferedImageOp op)
+	{
+		return op.filter(image, null);
 	}
 	
 	// TODO: If you get bored, try to implement filters into the project
