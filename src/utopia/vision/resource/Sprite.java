@@ -40,6 +40,7 @@ public class Sprite
 	
 	private BufferedImage[] images, originalImages;
 	private Vector3D origin, originalSize;
+	private File sourceFile;
 	
 	private Vector3D scaling = Vector3D.IDENTITY;
 	private int sharpness = 0; // 0 = neutral, > = sharp, < = blur
@@ -57,12 +58,52 @@ public class Sprite
 	 */
 	public Sprite(File file, int stripLength, Vector3D origin) throws IOException
 	{
-		// Checks the variables
+		loadSprite(file, stripLength, origin);
+	}
+	
+	/**
+	 * Creates a modified sprite
+	 * @param file The image file for the strip
+	 * @param stripLength How many separate images does the strip contain?
+	 * @param origin The sprite's origin's coordinates (relative). Use null for centered origin.
+	 * @param size The sprite's in-game size. Null for original image size.
+	 * @param sharpness How much the sprite is sharpened. Use a negative value for blurring.
+	 * @param luminosity How luminous the sprite is. Default at 1.
+	 * @throws IOException If image reading failed
+	 */
+	public Sprite(File file, int stripLength, Vector3D origin, Vector3D size, int sharpness, 
+			float luminosity) throws IOException
+	{
+		loadSprite(file, stripLength, origin);
+		
+		if (size != null)
+			this.scaling = size.dividedBy(this.originalSize);
+		this.sharpness = sharpness;
+		this.luminosity = luminosity;
+		
+		modifyImages();
+	}
+	
+	// Copies another sprite
+	private Sprite(Sprite other)
+	{
+		this.images = other.images.clone();
+		this.origin = other.origin;
+		this.originalSize = other.originalSize;
+		this.originalImages = other.originalImages;
+		this.scaling = other.scaling;
+		this.sharpness = other.sharpness;
+		this.luminosity = other.luminosity;
+	}
+	
+	private void loadSprite(File file, int stripLength, Vector3D origin) throws IOException
+	{
 		if (file == null || !file.exists())
 			throw new FileNotFoundException("Image file " + file + " doesn't exist");
 		if (stripLength < 1)
 			stripLength = 1;
 		
+		this.sourceFile = file;
 		this.origin = origin;
 		
 		// Loads the image
@@ -84,20 +125,6 @@ public class Sprite
 		// sprite
 		if (this.origin == null)
 			this.origin = this.originalSize.dividedBy(2);
-	}
-	
-	// TODO: Add constructor with filtering / etc.
-	
-	// Copies another sprite
-	private Sprite(Sprite other)
-	{
-		this.images = other.images.clone();
-		this.origin = other.origin;
-		this.originalSize = other.originalSize;
-		this.originalImages = other.originalImages;
-		this.scaling = other.scaling;
-		this.sharpness = other.sharpness;
-		this.luminosity = other.luminosity;
 	}
 	
 	
@@ -152,6 +179,14 @@ public class Sprite
 	public float getLuminosity()
 	{
 		return this.luminosity;
+	}
+	
+	/**
+	 * @return The image file of this sprite's source image
+	 */
+	public File getSourceFile()
+	{
+		return this.sourceFile;
 	}
 	
 	

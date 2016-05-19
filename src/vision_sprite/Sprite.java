@@ -25,6 +25,7 @@ import arc_bank.ResourceInitializationException;
  *
  * @author Mikko Hilpinen.
  * @since 27.11.2012.
+ * @deprecated Replaced with {@link utopia.vision.resource.Sprite}
  */
 public class Sprite implements Killable
 {	

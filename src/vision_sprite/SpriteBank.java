@@ -13,6 +13,7 @@ import arc_bank.ResourceInitializationException;
  * 
  * @author Mikko Hilpinen
  * @since 5.12.2014
+ * @deprecated Replaced with the bank classes from Arc project
  */
 public class SpriteBank
 {
