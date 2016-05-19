@@ -12,8 +12,7 @@ import utopia.genesis.util.Vector3D;
  */
 public abstract class SpriteDrawer
 {
-	// TODO: Make the user call animation instead. Remove handled and actor implementations
-	
+	// TODO: Add animation listening
 	// ATTRIBUTES	-------------------------------------------------------
 	
 	private double imageSpeed = 0.1, imageIndex = 0;
@@ -98,19 +97,18 @@ public abstract class SpriteDrawer
 	 */
 	public void setFrameIndex(int index)
 	{
-		this.imageIndex = index;
-		// Also checks the new index // TODO: Use differently
-		checkImageIndex();
+		setFrameIndex((double) index);
 	}
 	
 	/**
 	 * @return The animationlistenerhandler that will inform animationlisteners 
 	 * about the events in the animation
 	 */
+	/*
 	public AnimationListenerHandler getAnimationListenerHandler()
 	{
 		return this.listenerhandler;
-	}
+	}*/
 	
 	/**
 	 * @return The origin / offset used when drawing the sprite
@@ -125,8 +123,7 @@ public abstract class SpriteDrawer
 	
 	/**
 	 * Changes the origin / offset that is used when drawing the sprite.
-	 * @param origin The new origin to be used. Null means that the sprite's origin 
-	 * should be used (default)
+	 * @param origin The new origin to be used. Null sets the origin to the sprite's default
 	 */
 	public void setOrigin(Vector3D origin)
 	{
@@ -138,47 +135,58 @@ public abstract class SpriteDrawer
 	
 	/**
 	 * Draws the sprite. Should be called in the DrawnObject's drawSelf 
-	 * method or in another similar method. The sprite's origin will automatically be placed 
-	 * in the (0, 0) coordinates.
-	 * 
+	 * method or in another similar method. The drawer's origin will automatically be placed 
+	 * in the (0, 0) coordinates and the sprite will be scaled to its real size.
 	 * @param g2d The graphics object that does the actual drawing
 	 */
 	public void drawSprite(Graphics2D g2d)
 	{
 		// Draws the sprite
-		drawSprite(g2d, getImageIndex());
+		drawSprite(g2d, getFrameIndex());
 	}
 	
 	/**
-	 * Draws the sprite. Should be called in the DrawnObject's drawSelfBasic 
-	 * method or in another similar method. The sprite's origin will automatically be placed 
-	 * in the (0, 0) coordinates.
-	 * 
+	 * Draws the sprite. The drawer's origin will automatically be placed 
+	 * in the (0, 0) coordinates and the sprite will be scaled to its real size.
 	 * @param g2d The graphics object that does the actual drawing
-	 * @param imageindex Which subimage of the sprite is drawn (used with 
-	 * drawers that aren't automatically animated)
+	 * @param frameIndex Which frame of the sprite is draw
 	 */
-	public void drawSprite(Graphics2D g2d, int imageindex)
+	public void drawSprite(Graphics2D g2d, int frameIndex)
 	{
 		AffineTransform lastTransform = g2d.getTransform();
 		
+		Vector3D origin = getOrigin();
+		Vector3D scaling = getSprite().getScaling();
+		
 		// Moves the sprite according to its origin
-		g2d.translate(-getOrigin().getFirst(), -getOrigin().getSecond());
+		g2d.translate(-origin.getX(), -origin.getY());
 		
 		// Scales the sprite according to it's status
-		g2d.scale(getSprite().getScaling().getFirst(), getSprite().getScaling().getSecond());
+		g2d.scale(scaling.getX(), scaling.getY());
 		
 		// Draws the sprite
-		g2d.drawImage(getSprite().getSubImage(imageindex), 0, 0, null);
+		g2d.drawImage(getSprite().getFrame(frameIndex), 0, 0, null);
 		
 		g2d.setTransform(lastTransform);
 	}
 	
-	// Handles the change of the image index
-	private void animate(double steps)
+	/**
+	 * Updates the drawer's animation
+	 * @param steps The duration of the update
+	 */
+	public void animate(double steps)
 	{
-		this.imageIndex += getImageSpeed() * steps;
-		checkImageIndex();
+		animate(steps, getAnimationSpeed());
+	}
+	
+	/**
+	 * Updates the drawer's animation
+	 * @param steps The duration of the update
+	 * @param animationSpeed The speed at which the animation traversed (default at 0.1)
+	 */
+	public void animate(double steps, double animationSpeed)
+	{
+		setFrameIndex(this.imageIndex + animationSpeed * steps);
 	}
 	
 	// Returns the imageindex to a valid value

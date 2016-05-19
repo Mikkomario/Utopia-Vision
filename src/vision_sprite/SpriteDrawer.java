@@ -18,6 +18,7 @@ import java.awt.geom.AffineTransform;
  *
  * @author Mikko Hilpinen.
  * @since 2.7.2013.
+ * @deprecated Replaced with {@link utopia.vision.resource.SpriteDrawer}
  */
 public abstract class SpriteDrawer extends ConnectedHandled<Handled> implements Actor
 {
