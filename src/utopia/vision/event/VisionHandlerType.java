@@ -1,20 +1,18 @@
-package vision_sprite;
+package utopia.vision.event;
 
-import genesis_event.HandlerType;
+import utopia.inception.handling.HandlerType;
 
 /**
- * These are the different types of handlers used in the Vision module
- * 
+ * These are the different types of handlers introduced in the Vision project
  * @author Mikko Hilpinen
  * @since 4.12.2014
- * @deprecated Replaced with {@link utopia.vision.event.VisionHandlerType}
  */
 public enum VisionHandlerType implements HandlerType
 {
 	/**
 	 * AnimationListenerHandler informs objects about animation lapses
 	 */
-	ANIMATIONLISTENERHANDLER;
+	ANIMATION_LISTENER_EVENT_HANDLER;
 	
 	
 	// IMPLEMENTED METHODS	-------------------------
@@ -22,6 +20,6 @@ public enum VisionHandlerType implements HandlerType
 	@Override
 	public Class<?> getSupportedHandledClass()
 	{
-		return AnimationListener.class;
+		return AnimationEventListener.class;
 	}
 }

@@ -4,6 +4,9 @@ import java.awt.Graphics2D;
 import java.awt.geom.AffineTransform;
 
 import utopia.genesis.util.Vector3D;
+import utopia.vision.event.AnimationEvent;
+import utopia.vision.event.AnimationEvent.EventType;
+import utopia.vision.event.AnimationListenerHandler;
 
 /**
  * Spritedrawer is able to draw and animate sprites.
@@ -12,12 +15,12 @@ import utopia.genesis.util.Vector3D;
  */
 public abstract class SpriteDrawer
 {
-	// TODO: Add animation listening
 	// ATTRIBUTES	-------------------------------------------------------
 	
 	private double imageSpeed = 0.1, imageIndex = 0;
-	//private AnimationListenerHandler listenerhandler;
 	private Vector3D forcedOrigin = null;
+	
+	private AnimationListenerHandler listenerHandler = null;
 		
 		
 	// CONSTRUCTOR	-------------------------------------------------------
@@ -101,14 +104,14 @@ public abstract class SpriteDrawer
 	}
 	
 	/**
-	 * @return The animationlistenerhandler that will inform animationlisteners 
-	 * about the events in the animation
+	 * @return The animation event listener handler used with this drawer
 	 */
-	/*
 	public AnimationListenerHandler getAnimationListenerHandler()
 	{
-		return this.listenerhandler;
-	}*/
+		if (this.listenerHandler == null)
+			this.listenerHandler = new AnimationListenerHandler();
+		return this.listenerHandler;
+	}
 	
 	/**
 	 * @return The origin / offset used when drawing the sprite
@@ -186,14 +189,39 @@ public abstract class SpriteDrawer
 	 */
 	public void animate(double steps, double animationSpeed)
 	{
-		setFrameIndex(this.imageIndex + animationSpeed * steps);
+		int previousIndex = getFrameIndex();
+		
+		// Checks whether the animation cycled
+		if (setFrameIndex(this.imageIndex + animationSpeed * steps))
+		{
+			if (animationSpeed > 0)
+			{
+				if (getFrameIndex() < previousIndex)
+					generateAnimationEvent(EventType.ANIMATION_COMPLETED);
+			}
+			else if (getFrameIndex() > previousIndex)
+				generateAnimationEvent(EventType.ANIMATION_COMPLETED);
+		}
+	}
+	
+	/**
+	 * Generates a new animation event and informs all of the animation listeners attached 
+	 * to this drawer
+	 * @param type The type of the generated event
+	 */
+	public void generateAnimationEvent(EventType type)
+	{
+		if (this.listenerHandler != null)
+		{
+			this.listenerHandler.onAnimationEvent(new AnimationEvent(type, this, getSprite()));
+		}
 	}
 	
 	// Returns the imageindex to a valid value
-	private void setFrameIndex(double index)
+	private boolean setFrameIndex(double index)
 	{
 		if (getSprite() == null)
-			return;
+			return false;
 		
 		double newIndex;
 		if (index < 0)
@@ -207,9 +235,13 @@ public abstract class SpriteDrawer
 		else
 			newIndex = index % getSprite().getLength();
 		
+		// Generates animation events when the frame changes
+		boolean frameChanged = (int) newIndex != getFrameIndex();
+		
 		this.imageIndex = newIndex;
-		// If image index changed (cycle ended / looped), informs the listeners
-		//if (getImageIndex() != imageindexlast)
-		//	getAnimationListenerHandler().onAnimationEnd(this);
+		if (frameChanged)
+			generateAnimationEvent(EventType.FRAME_CHANGED);
+		
+		return frameChanged;
 	}
 }

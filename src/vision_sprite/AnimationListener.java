@@ -1,6 +1,8 @@
 package vision_sprite;
 
 import genesis_event.Handled;
+import utopia.vision.event.AnimationEventListener;
+import utopia.vision.event.AnimationListenerHandler;
 
 /**
  * Animationlistener is informed when an animation cycle ends.<br>
@@ -10,6 +12,7 @@ import genesis_event.Handled;
  * @since 28.8.2013.
  * @see AnimationListenerHandler
  * @see SpriteDrawer
+ * @deprecated Replaced with {@link AnimationEventListener}
  */
 public interface AnimationListener extends Handled
 {

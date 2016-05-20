@@ -5,6 +5,7 @@ import genesis_event.Handled;
 import genesis_event.HandlerRelay;
 import genesis_util.ConnectedHandled;
 import genesis_util.Vector3D;
+import utopia.vision.event.AnimationListenerHandler;
 
 import java.awt.Graphics2D;
 import java.awt.geom.AffineTransform;
@@ -27,7 +28,7 @@ public abstract class SpriteDrawer extends ConnectedHandled<Handled> implements 
 	// ATTRIBUTES	-------------------------------------------------------
 	
 	private double imageSpeed, imageIndex;
-	private AnimationListenerHandler listenerhandler;
+	private AnimationEventListenerHandler listenerhandler;
 	private Vector3D forcedOrigin;
 		
 		
@@ -45,7 +46,7 @@ public abstract class SpriteDrawer extends ConnectedHandled<Handled> implements 
 		super(user, handlers);
 		
 		// Initializes the attributes
-		this.listenerhandler = new AnimationListenerHandler(false);
+		this.listenerhandler = new AnimationEventListenerHandler(false);
 		
 		this.imageSpeed = 0.1;
 		this.imageIndex = 0;
@@ -138,7 +139,7 @@ public abstract class SpriteDrawer extends ConnectedHandled<Handled> implements 
 	 * @return The animationlistenerhandler that will inform animationlisteners 
 	 * about the events in the animation
 	 */
-	public AnimationListenerHandler getAnimationListenerHandler()
+	public AnimationEventListenerHandler getAnimationListenerHandler()
 	{
 		return this.listenerhandler;
 	}

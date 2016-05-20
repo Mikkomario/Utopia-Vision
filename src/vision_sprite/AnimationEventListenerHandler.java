@@ -3,6 +3,7 @@ package vision_sprite;
 import genesis_event.Handler;
 import genesis_event.HandlerRelay;
 import genesis_event.HandlerType;
+import utopia.vision.event.AnimationListenerHandler;
 
 /**
  * Animationlistenerhandler informs numerous animationlisteners about animation 
@@ -11,8 +12,9 @@ import genesis_event.HandlerType;
  * @author Mikko Hilpinen.
  * @since 28.8.2013.
  * @see SpriteDrawer
+ * @deprecated Replaced with {@link AnimationListenerHandler}
  */
-public class AnimationListenerHandler extends Handler<AnimationListener> implements 
+public class AnimationEventListenerHandler extends Handler<AnimationListener> implements 
 		AnimationListener
 {
 	// ATTRIBUTES	----------------------------------------------------
@@ -29,7 +31,7 @@ public class AnimationListenerHandler extends Handler<AnimationListener> impleme
 	 * @param superhandler The animationlistenerhandler that will inform 
 	 * the handler about animation events (optional)
 	 */
-	public AnimationListenerHandler(boolean autodeath, AnimationListenerHandler superhandler)
+	public AnimationEventListenerHandler(boolean autodeath, AnimationEventListenerHandler superhandler)
 	{
 		super(autodeath);
 		
@@ -42,7 +44,7 @@ public class AnimationListenerHandler extends Handler<AnimationListener> impleme
 	 * @param autoDeath Will the handler die once it runs out of handled objects
 	 * @param handlers The handlers that will handle this handler
 	 */
-	public AnimationListenerHandler(boolean autoDeath, HandlerRelay handlers)
+	public AnimationEventListenerHandler(boolean autoDeath, HandlerRelay handlers)
 	{
 		super(autoDeath, handlers);
 	}
@@ -51,7 +53,7 @@ public class AnimationListenerHandler extends Handler<AnimationListener> impleme
 	 * Creates a new handler
 	 * @param autoDeath Will the handler die once it runs out of handled objects
 	 */
-	public AnimationListenerHandler(boolean autoDeath)
+	public AnimationEventListenerHandler(boolean autoDeath)
 	{
 		super(autoDeath);
 	}
