@@ -104,6 +104,16 @@ public abstract class SpriteDrawer
 	}
 	
 	/**
+	 * Resets the drawer's animation back to the first frame. Creates a new animation reset 
+	 * event as well
+	 */
+	public void resetAnimation()
+	{
+		setFrameIndex(0.0);
+		generateAnimationEvent(EventType.ANIMATION_RESET);
+	}
+	
+	/**
 	 * @return The animation event listener handler used with this drawer
 	 */
 	public AnimationListenerHandler getAnimationListenerHandler()
