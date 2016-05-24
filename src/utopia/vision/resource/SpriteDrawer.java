@@ -170,21 +170,7 @@ public class SpriteDrawer
 	 */
 	public void drawSprite(Graphics2D g2d, int frameIndex)
 	{
-		AffineTransform lastTransform = g2d.getTransform();
-		
-		Vector3D origin = getOrigin();
-		Vector3D scaling = getSprite().getScaling();
-		
-		// Moves the sprite according to its origin
-		g2d.translate(-origin.getX(), -origin.getY());
-		
-		// Scales the sprite according to it's status
-		g2d.scale(scaling.getX(), scaling.getY());
-		
-		// Draws the sprite
-		g2d.drawImage(getSprite().getFrame(frameIndex), 0, 0, null);
-		
-		g2d.setTransform(lastTransform);
+		drawSprite(getSprite(), frameIndex, getOrigin(), g2d);
 	}
 	
 	/**
@@ -229,6 +215,34 @@ public class SpriteDrawer
 		{
 			this.listenerHandler.onAnimationEvent(new AnimationEvent(type, this, getSprite()));
 		}
+	}
+	
+	/**
+	 * Draws a sprite
+	 * @param sprite The sprite that is drawn
+	 * @param frameIndex The index of the drawn frame
+	 * @param origin The origin that is used. Use null for sprite's default origin
+	 * @param g2d The graphics object that does the drawing
+	 */
+	public static void drawSprite(Sprite sprite, int frameIndex, Vector3D origin, Graphics2D g2d)
+	{
+		AffineTransform lastTransform = g2d.getTransform();
+		
+		if (origin == null)
+			origin = sprite.getOrigin();
+		
+		Vector3D scaling = sprite.getScaling();
+		
+		// Moves the sprite according to its origin
+		g2d.translate(-origin.getX(), -origin.getY());
+		
+		// Scales the sprite according to it's status
+		g2d.scale(scaling.getX(), scaling.getY());
+		
+		// Draws the sprite
+		g2d.drawImage(sprite.getFrame(frameIndex), 0, 0, null);
+		
+		g2d.setTransform(lastTransform);
 	}
 	
 	// Returns the imageindex to a valid value
