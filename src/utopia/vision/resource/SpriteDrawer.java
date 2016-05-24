@@ -13,13 +13,14 @@ import utopia.vision.event.AnimationListenerHandler;
  * @author Mikko Hilpinen.
  * @since 2.7.2013.
  */
-public abstract class SpriteDrawer
+public class SpriteDrawer
 {
 	// ATTRIBUTES	-------------------------------------------------------
 	
 	private double imageSpeed = 0.1, imageIndex = 0;
 	private Vector3D forcedOrigin = null;
 	
+	private Sprite sprite;
 	private AnimationListenerHandler listenerHandler = null;
 		
 		
@@ -27,32 +28,35 @@ public abstract class SpriteDrawer
 		
 	/**
 	 * Creates a new sprite drawer that uses the sprite's default origin
+	 * @param sprite The sprite used by the drawer
 	 */
-	public SpriteDrawer()
+	public SpriteDrawer(Sprite sprite)
 	{
-		// Simple constructor
+		this.sprite = sprite;
 	}
 	
 	/**
 	 * Creates a new sprite drawer
+	 * @param sprite The sprite used by the drawer
 	 * @param origin The origin the drawer uses. This will override the sprite's default 
 	 * origin
 	 */
-	public SpriteDrawer(Vector3D origin)
+	public SpriteDrawer(Sprite sprite, Vector3D origin)
 	{
+		this.sprite = sprite;
 		this.forcedOrigin = origin;
 	}
 	
 	
-	// ABSTRACT METHODS	--------------------------------------------------
+	// GETTERS & SETTERS	---------------------
 	
 	/**
 	 * @return The sprite that is currently being drawn / used
 	 */
-	public abstract Sprite getSprite();
-	
-	
-	// GETTERS & SETTERS	-----------------------------------------------
+	public Sprite getSprite()
+	{
+		return this.sprite;
+	}
 	
 	/**
 	 * @return How fast the frames in the animation change (frames / step) 
