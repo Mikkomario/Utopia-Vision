@@ -1,5 +1,7 @@
 package utopia.vision.resource;
 
+import java.awt.Graphics2D;
+import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
 import java.awt.image.BufferedImageOp;
 import java.awt.image.ConvolveOp;
@@ -227,6 +229,9 @@ public class Sprite
 	 */
 	public Sprite withScaling(Vector3D scaling)
 	{
+		if (scaling.equalsIn2D(getScaling()))
+			return this;
+		
 		Sprite sprite = new Sprite(this);
 		sprite.scaling = scaling;
 		return sprite;
@@ -288,6 +293,34 @@ public class Sprite
 			
 			return sprite;
 		}
+	}
+	
+	/**
+	 * Draws a sprite
+	 * @param sprite The sprite that is drawn
+	 * @param frameIndex The index of the drawn frame
+	 * @param origin The origin that is used. Use null for sprite's default origin
+	 * @param g2d The graphics object that does the drawing
+	 */
+	public static void drawSprite(Sprite sprite, int frameIndex, Vector3D origin, Graphics2D g2d)
+	{
+		AffineTransform lastTransform = g2d.getTransform();
+		
+		if (origin == null)
+			origin = sprite.getOrigin();
+		
+		Vector3D scaling = sprite.getScaling();
+		
+		// Moves the sprite according to its origin
+		g2d.translate(-origin.getX(), -origin.getY());
+		
+		// Scales the sprite according to it's status
+		g2d.scale(scaling.getX(), scaling.getY());
+		
+		// Draws the sprite
+		g2d.drawImage(sprite.getFrame(frameIndex), 0, 0, null);
+		
+		g2d.setTransform(lastTransform);
 	}
 	
 	private void modifyImages()
