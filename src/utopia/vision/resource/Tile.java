@@ -1,7 +1,5 @@
 package utopia.vision.resource;
 
-import java.awt.image.BufferedImage;
-
 import utopia.genesis.util.Vector3D;
 
 /**
@@ -13,7 +11,8 @@ public class Tile
 {
 	// ATTRIBUTES	--------------
 	
-	private Sprite sprite;
+	private String bankName, spriteName;
+	private Vector3D size;
 	private int startFrameIndex = 0;
 	private double animationSpeed = 0.1;
 	
@@ -22,24 +21,31 @@ public class Tile
 	
 	/**
 	 * Creates a new tile
-	 * @param sprite The sprite used in this tile
+	 * @param spriteBankName The name of the bank that contains the sprite used in this tile
+	 * @param spriteName The name of the sprite used in this tile
 	 * @param size The size of the tile
 	 */
-	public Tile(Sprite sprite, Vector3D size)
+	public Tile(String spriteBankName, String spriteName, Vector3D size)
 	{
-		this.sprite = sprite.withSize(size);
+		this.bankName = spriteBankName;
+		this.spriteName = spriteName;
+		this.size = size;
 	}
 
 	/**
 	 * Creates a new tile
-	 * @param sprite The sprite used in this tile
+	 * @param spriteBankName The name of the bank that contains the sprite used in this tile
+	 * @param spriteName The name of the sprite used in this tile
 	 * @param size The size of the tile
 	 * @param startFrameIndex The frame that is first displayed (default 0)
 	 * @param animationSpeed The animation speed used in the tile (default 0.1)
 	 */
-	public Tile(Sprite sprite, Vector3D size, int startFrameIndex, double animationSpeed)
+	public Tile(String spriteBankName, String spriteName, Vector3D size, int startFrameIndex, 
+			double animationSpeed)
 	{
-		this.sprite = sprite.withSize(size);
+		this.bankName = spriteBankName;
+		this.spriteName = spriteName;
+		this.size = size;
 		this.startFrameIndex = startFrameIndex;
 		this.animationSpeed = animationSpeed;
 	}
@@ -51,7 +57,9 @@ public class Tile
 	 */
 	public Tile(Tile other, Vector3D size)
 	{
-		this.sprite = other.sprite.withSize(size);
+		this.bankName = other.bankName;
+		this.spriteName = other.spriteName;
+		this.size = size;
 		this.startFrameIndex = other.startFrameIndex;
 		this.animationSpeed = other.animationSpeed;
 	}
@@ -60,11 +68,19 @@ public class Tile
 	// ACCESSORS	-------------
 	
 	/**
-	 * @return The sprite used in this tile
+	 * @return The name of the bank that contains the sprite used in this tile
 	 */
-	public Sprite getSprite()
+	public String getSpriteBankName()
 	{
-		return this.sprite;
+		return this.bankName;
+	}
+	
+	/**
+	 * @return The name of the sprite used in this tile
+	 */
+	public String getSpriteName()
+	{
+		return this.spriteName;
 	}
 	
 	/**
@@ -88,19 +104,6 @@ public class Tile
 	 */
 	public Vector3D getSize()
 	{
-		return getSprite().getSize();
-	}
-	
-	
-	// OTHER METHODS	---------
-	
-	/**
-	 * Finds the frame that should be displayed of this tile at a given time
-	 * @param t A time frame (in steps)
-	 * @return The frame that should be displayed
-	 */
-	public BufferedImage getFrame(double t)
-	{
-		return getSprite().getFrame(getStartFrameIndex() + (int) (t * getAnimationSpeed()));
+		return this.size;
 	}
 }
