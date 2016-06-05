@@ -16,6 +16,12 @@ import utopia.genesis.util.Vector3D;
  */
 public class TileMap
 {
+	// TODO: Make mutable?
+	// TODO: Add origin either here or at the drawer
+	// TODO: Make tileMapDrawer create a sprite drawer based on each tile in a map
+	// Set origin to tileMap.origin - tile.position. Each drawer handles animation separately.
+	// TODO: Import arc and make tileMapDrawer fetch the correct sprites from a bankbank upon creation
+	
 	// ATTRIBUTES	---------------
 	
 	private List<Pair<Vector3D, Tile>> tiles = new ArrayList<>();
