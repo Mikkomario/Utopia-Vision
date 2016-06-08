@@ -94,29 +94,14 @@ public class VisionValueParser implements ValueParser
 			if (to.equals(VisionDataType.SPRITE))
 			{
 				Model<?> model = value.toModel();
-				
-				if (!model.containsAttribute("file"))
-					throw new ValueParseException(value, to); // TODO: Could add an exception message
+				checkThatModelContains(value, to, model, "file");
 				
 				File sourceFile = new File(model.getAttributeValue("file").toString());
 				
-				int length = 1;
-				if (model.containsAttribute("length"))
-					length = model.getAttributeValue("length").toInteger();
-				
-				Vector3D origin;
-				if (model.containsAttribute("origin"))
-					origin = GenesisDataType.valueToVector(model.getAttributeValue("origin"));
-				else
-					origin = Vector3D.ZERO;
-				
-				Vector3D size = null;
-				if (model.containsAttribute("size"))
-					size = GenesisDataType.valueToVector(model.getAttributeValue("size"));
-				
-				int sharpness = 0;
-				if (model.containsAttribute("sharpness"))
-					sharpness = model.getAttributeValue("sharpness").toInteger();
+				int length = getInteger(model, "length", 1);
+				Vector3D origin = getVector(model, "origin", Vector3D.ZERO);
+				Vector3D size = getVector(model, "size", null);
+				int sharpness = getInteger(model, "sharpness", 0);
 				
 				float luminosity = 0;
 				if (model.containsAttribute("luminosity"))
@@ -132,6 +117,11 @@ public class VisionValueParser implements ValueParser
 					throw new ValueParseException(value.getObjectValue(), from, to, e);
 				}
 			}
+			else if (to.equals(VisionDataType.TILE))
+			{
+				Model<?> model = value.toModel();
+				// TODO: Continue
+			}
 		}
 		
 		return null;
@@ -141,5 +131,41 @@ public class VisionValueParser implements ValueParser
 	public Collection<? extends Conversion> getConversions()
 	{
 		return this.conversions;
+	}
+	
+	
+	// OTHER METHODS	------------
+	
+	private static void checkThatModelContains(Value from, DataType to, 
+			Model<? extends Variable> model, String... requiredAttributes)
+	{
+		for (String attName : requiredAttributes)
+		{
+			if (!model.containsAttribute(attName))
+				throw new ValueParseException(from, to);
+		}
+	}
+	
+	private static Value getValue(Model<? extends Variable> model, String attName, Value defaultValue)
+	{
+		if (model.containsAttribute(attName))
+			return model.getAttributeValue(attName);
+		else
+			return defaultValue;
+	}
+	
+	private static Vector3D getVector(Model<? extends Variable> model, String attName, Vector3D defaultValue)
+	{
+		return GenesisDataType.valueToVector(getValue(model, attName, GenesisDataType.Vector(defaultValue)));
+	}
+	
+	private static Integer getInteger(Model<? extends Variable> model, String attName, Integer defaultValue)
+	{
+		return getValue(model, attName, Value.Integer(defaultValue)).toInteger();
+	}
+	
+	private static String getString(Model<? extends Variable> model, String attName, String defaultValue)
+	{
+		return getValue(model, attName, Value.String(defaultValue)).toString();
 	}
 }
