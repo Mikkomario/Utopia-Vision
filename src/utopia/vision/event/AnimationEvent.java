@@ -159,6 +159,15 @@ public class AnimationEvent implements Event
 		/**
 		 * These events are generated when an animation is reset
 		 */
-		ANIMATION_RESET;
+		ANIMATION_RESET,
+		/**
+		 * These events are generated when an animation is suspended (temporarily or 
+		 * permanently).
+		 */
+		ANIMATION_SUSPENDED,
+		/**
+		 * These events are generated when an animation is resumed.
+		 */
+		ANIMATION_RESUMED;
 	}
 }

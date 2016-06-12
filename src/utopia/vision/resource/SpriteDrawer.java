@@ -72,6 +72,15 @@ public class SpriteDrawer
 	 */
 	public void setAnimationSpeed(double speed)
 	{
+		// Generates animation events if necessary
+		if (speed == 0)
+		{
+			if (this.imageSpeed != 0)
+				generateAnimationEvent(EventType.ANIMATION_SUSPENDED);
+		}
+		else if (this.imageSpeed == 0)
+			generateAnimationEvent(EventType.ANIMATION_RESUMED);
+			
 		this.imageSpeed = speed;
 	}
 	
@@ -169,7 +178,20 @@ public class SpriteDrawer
 	 */
 	public void drawSprite(Graphics2D g2d, int frameIndex)
 	{
-		Sprite.drawSprite(getSprite(), frameIndex, getOrigin(), g2d);
+		drawSprite(g2d, frameIndex, getOrigin());
+	}
+	
+	/**
+	 * Draws the sprite using specific origin coordinates. This overrides the drawer's origin 
+	 * status.
+	 * @param g2d The graphics object that does the actual drawing
+	 * @param frameIndex Which frame of the sprite is draw
+	 * @param origin The origin used when drawing the sprite. Null will be interpreted as 
+	 * the sprite's default origin.
+	 */
+	public void drawSprite(Graphics2D g2d, int frameIndex, Vector3D origin)
+	{
+		Sprite.drawSprite(getSprite(), frameIndex, origin, g2d);
 	}
 	
 	/**

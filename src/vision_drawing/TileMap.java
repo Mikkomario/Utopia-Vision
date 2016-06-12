@@ -22,6 +22,7 @@ import genesis_util.Vector3D;
  * 
  * @author Mikko Hilpinen
  * @since 6.12.2014
+ * @deprecated Replaced with {@link utopia.vision.resource.TileMap}
  */
 public class TileMap extends SimpleHandled implements Transformable, Writable, 
 		ConstructableHandled // TODO: Why not implement drawable and draw the tiles?
@@ -313,6 +314,9 @@ public class TileMap extends SimpleHandled implements Transformable, Writable,
 	
 	// TODO: Remove dependent implementation, keep tile as a struct and draw in tilemap
 	// TODO: Make this class public and create a data type for it
+	/**
+	 * @deprecated Replaced with {@link utopia.vision.resource.Tile}
+	 */
 	private static class Tile extends DependentSpriteDrawer<TileMap, SingleSpriteDrawer>
 	{
 		// ATTRIBUTES	----------------------------
