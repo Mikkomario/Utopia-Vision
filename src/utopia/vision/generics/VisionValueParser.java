@@ -8,6 +8,7 @@ import java.util.List;
 
 import utopia.flow.generics.BasicDataType;
 import utopia.flow.generics.Conversion;
+import utopia.flow.generics.ConversionReliability;
 import utopia.flow.generics.DataType;
 import utopia.flow.generics.Model;
 import utopia.flow.generics.Value;
@@ -35,7 +36,18 @@ public class VisionValueParser implements ValueParser
 	
 	private VisionValueParser()
 	{
-		// TODO Add conversions
+		// Can convert between model and sprite / tile
+		// Conversions to models always succeed, but a model may not always represent a correct 
+		// entity when converting other way
+		this.conversions.add(new Conversion(VisionDataType.SPRITE, BasicDataType.MODEL, 
+				ConversionReliability.PERFECT));
+		this.conversions.add(new Conversion(VisionDataType.TILE, BasicDataType.MODEL, 
+				ConversionReliability.PERFECT));
+		
+		this.conversions.add(new Conversion(BasicDataType.MODEL, VisionDataType.SPRITE, 
+				ConversionReliability.DANGEROUS));
+		this.conversions.add(new Conversion(BasicDataType.MODEL, VisionDataType.TILE, 
+				ConversionReliability.DANGEROUS));
 	}
 	
 	/**
@@ -120,7 +132,17 @@ public class VisionValueParser implements ValueParser
 			else if (to.equals(VisionDataType.TILE))
 			{
 				Model<?> model = value.toModel();
-				// TODO: Continue
+				checkThatModelContains(value, to, model, "bankName", "spriteName", "size");
+				
+				String bankName = model.getAttributeValue("bankName").toString();
+				String spriteName = model.getAttributeValue("spriteName").toString();
+				Vector3D size = GenesisDataType.valueToVector(model.getAttributeValue("size"));
+				
+				int startFrameIndex = getInteger(model, "startFrameIndex", 0);
+				double animationSpeed = getValue(model, "animationSpeed", Value.Double(0.1)).toDouble();
+				
+				return VisionDataType.Tile(new Tile(bankName, spriteName, size, 
+						startFrameIndex, animationSpeed));
 			}
 		}
 		
@@ -162,10 +184,5 @@ public class VisionValueParser implements ValueParser
 	private static Integer getInteger(Model<? extends Variable> model, String attName, Integer defaultValue)
 	{
 		return getValue(model, attName, Value.Integer(defaultValue)).toInteger();
-	}
-	
-	private static String getString(Model<? extends Variable> model, String attName, String defaultValue)
-	{
-		return getValue(model, attName, Value.String(defaultValue)).toString();
 	}
 }
