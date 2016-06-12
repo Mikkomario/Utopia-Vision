@@ -274,6 +274,7 @@ public class Sprite
 		return sharpened(-amount);
 	}
 	
+	// TODO: Doesn't work
 	/**
 	 * Creates a sprite based on this one, but having different luminosity
 	 * @param scale how much the luminosity of the sprite is scaled. With 0.8 the 
