@@ -274,7 +274,6 @@ public class Sprite
 		return sharpened(-amount);
 	}
 	
-	// TODO: Doesn't work
 	/**
 	 * Creates a sprite based on this one, but having different luminosity
 	 * @param scale how much the luminosity of the sprite is scaled. With 0.8 the 
@@ -359,8 +358,8 @@ public class Sprite
 	
 	private static BufferedImage setLuminosity(BufferedImage image, float scale)
 	{
-		float[] scales = {scale};//{scale, scale, scale, 1.0f};
-		float[] offsets = {0};//{0, 0, 0, 0};
+		float[] scales = {scale, scale, scale, 1.0f};
+		float[] offsets = {0, 0, 0, 0};
 	    return filter(image, new RescaleOp(scales, offsets, null));
 	}
 	

@@ -48,9 +48,10 @@ class VisionSpriteTest
 			
 			// Creates the resources
 			Sprite sprite = new Sprite(new File("testData/panic_spell_strip4.png"), 4, null);
+			Sprite luminous = sprite.withLuminosity(1.6f);
 			
 			// Creates the objects
-			handlers.add(new SimpleSpriteObject(sprite, resolution.dividedBy(2)));
+			handlers.add(new SimpleSpriteObject(luminous, resolution.dividedBy(2)));
 			
 			// Starts the program
 			stepHandler.start();
