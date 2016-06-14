@@ -296,6 +296,22 @@ public class Sprite
 	}
 	
 	/**
+	 * @return A version of this sprite where the order of the frames has been reversed
+	 */
+	public Sprite reverse()
+	{
+		Sprite s = new Sprite(this);
+		
+		for(int i = 0; i < this.images.length; i++)
+		{
+			s.images[i] = this.images[this.images.length - 1 - i];
+			s.originalImages[i] = this.originalImages[this.originalImages.length - 1 - i];
+		}
+		
+		return s;
+	}
+	
+	/**
 	 * Draws a sprite
 	 * @param sprite The sprite that is drawn
 	 * @param frameIndex The index of the drawn frame

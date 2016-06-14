@@ -58,6 +58,19 @@ public class SpriteDrawer
 	}
 	
 	/**
+	 * Changes the sprite drawn by this drawer
+	 * @param sprite The new sprite that will be drawn
+	 * @param resetAnimation Should the animation be reset back to the first frame?
+	 */
+	public void setSprite(Sprite sprite, boolean resetAnimation)
+	{
+		this.sprite = sprite;
+		generateAnimationEvent(EventType.SPRITE_CHANGED);
+		if (resetAnimation)
+			resetAnimation();
+	}
+	
+	/**
 	 * @return How fast the frames in the animation change (frames / step) 
 	 * (default at 0.1 = one frame in 10 steps)
 	 */

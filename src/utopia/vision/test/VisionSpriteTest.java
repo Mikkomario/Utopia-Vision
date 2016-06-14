@@ -15,8 +15,13 @@ import utopia.genesis.video.GamePanel;
 import utopia.genesis.video.GameWindow;
 import utopia.genesis.video.GamePanel.ScalingPolicy;
 import utopia.genesis.video.SplitPanel.ScreenSplit;
+import utopia.inception.event.EventSelector;
+import utopia.inception.event.StrictEventSelector;
 import utopia.inception.handling.HandlerRelay;
 import utopia.inception.util.SimpleHandled;
+import utopia.vision.event.AnimationEvent;
+import utopia.vision.event.AnimationEvent.EventType;
+import utopia.vision.event.AnimationEventListener;
 import utopia.vision.resource.Sprite;
 import utopia.vision.resource.SpriteDrawer;
 
@@ -67,12 +72,14 @@ class VisionSpriteTest
 	// NESTED CLASSES	------------
 	
 	private static class SimpleSpriteObject extends SimpleHandled implements Drawable, 
-			Transformable, Actor
+			Transformable, Actor, AnimationEventListener
 	{
 		// ATTRIBUTES	------------
 		
 		private Transformation transformation;
 		private SpriteDrawer drawer;
+		private EventSelector<AnimationEvent> selector = new StrictEventSelector<>();
+		private Sprite originalSprite, reversedSprite;
 		
 		
 		// CONSTUCTOR	------------
@@ -81,6 +88,11 @@ class VisionSpriteTest
 		{
 			this.transformation = new Transformation(position);
 			this.drawer = new SpriteDrawer(sprite);
+			this.drawer.setAnimationDuration(StepHandler.millisToSteps(1000));
+			this.originalSprite = sprite;
+			this.reversedSprite = sprite.reverse();
+			
+			this.drawer.getAnimationListenerHandler().add(this);
 		}
 		
 		
@@ -125,6 +137,27 @@ class VisionSpriteTest
 		public SpriteDrawer getDrawer()
 		{
 			return this.drawer;
+		}
+
+
+		@Override
+		public EventSelector<AnimationEvent> getAnimationEventSelector()
+		{
+			return this.selector;
+		}
+
+		@Override
+		public void onAnimationEvent(AnimationEvent event)
+		{
+			System.out.println(event.getType());
+			if (event.getType() == EventType.ANIMATION_COMPLETED)
+			{
+				if (this.drawer.getSprite() == this.originalSprite)
+					this.drawer.setSprite(this.reversedSprite, false);
+				else
+					this.drawer.setSprite(this.originalSprite, false);
+				this.drawer.setFrameIndex(1);
+			}
 		}
 	}
 }
