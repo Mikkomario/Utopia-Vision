@@ -24,6 +24,7 @@ import utopia.vision.event.AnimationEvent.EventType;
 import utopia.vision.event.AnimationEventListener;
 import utopia.vision.resource.Sprite;
 import utopia.vision.resource.SpriteDrawer;
+import utopia.vision.util.DependentSpriteObject;
 
 /**
  * This test tests the various sprite drawing functions
@@ -56,8 +57,14 @@ class VisionSpriteTest
 			Sprite luminous = sprite.withLuminosity(1.6f);
 			
 			// Creates the objects
-			handlers.add(new SimpleSpriteObject(luminous, resolution.dividedBy(2)));
+			SimpleSpriteObject independent = new SimpleSpriteObject(sprite, resolution.dividedBy(2));
+			DependentSpriteObject<?> dependent = new DependentSpriteObject<>(independent, 
+					new SpriteDrawer(luminous), -5);
+			dependent.setAlpha(0.5f);
+			dependent.transform(Transformation.scalingTransformation(1.5));
 			
+			handlers.add(independent, dependent);
+					
 			// Starts the program
 			stepHandler.start();
 		}
@@ -80,6 +87,7 @@ class VisionSpriteTest
 		private SpriteDrawer drawer;
 		private EventSelector<AnimationEvent> selector = new StrictEventSelector<>();
 		private Sprite originalSprite, reversedSprite;
+		private double phase = 0;
 		
 		
 		// CONSTUCTOR	------------
@@ -102,6 +110,9 @@ class VisionSpriteTest
 		public void act(double duration)
 		{
 			this.drawer.animate(duration);
+			
+			this.phase = (this.phase + duration * 0.01) % 1;
+			setTrasformation(getTransformation().withScaling(0.5 + Math.sin(this.phase * Math.PI)));
 		}
 
 		@Override
