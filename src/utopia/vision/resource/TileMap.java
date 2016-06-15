@@ -25,6 +25,7 @@ public class TileMap
 	// ATTRIBUTES	---------------
 	
 	private List<Pair<Vector3D, Tile>> tiles = new ArrayList<>();
+	private Vector3D origin;
 	
 	
 	// CONSTRUCTOR	---------------
@@ -32,9 +33,11 @@ public class TileMap
 	/**
 	 * Creates a new tile map
 	 * @param tiles The tiles in this map
+	 * @param origin The origin used for this map by default
 	 */
-	public TileMap(Collection<? extends Pair<Vector3D, Tile>> tiles)
+	public TileMap(Collection<? extends Pair<Vector3D, Tile>> tiles, Vector3D origin)
 	{
+		this.origin = origin;
 		this.tiles.addAll(tiles);
 		
 		// Sorts the tiles as well
@@ -51,6 +54,14 @@ public class TileMap
 	public List<Pair<Vector3D, Tile>> getTiles()
 	{
 		return new ArrayList<>(this.tiles);
+	}
+	
+	/**
+	 * @return The origin used for this map by default
+	 */
+	public Vector3D getOrigin()
+	{
+		return this.origin;
 	}
 	
 	

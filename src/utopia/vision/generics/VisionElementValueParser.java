@@ -71,6 +71,7 @@ public class VisionElementValueParser implements ElementValueParser
 			TileMap map = VisionDataType.valueToTileMap(value);
 			
 			TreeNode<Element> root = new TreeNode<>(new Element("tileMap"));
+			addChildElement(root, "origin", GenesisDataType.Vector(map.getOrigin()));
 			// Each tile is added under a separate node, paired with a position
 			for (Pair<Vector3D, Tile> tile : map.getTiles())
 			{
@@ -160,29 +161,35 @@ public class VisionElementValueParser implements ElementValueParser
 		else if (targetType.equals(VisionDataType.TILEMAP))
 		{
 			List<Pair<Vector3D, Tile>> tiles = new ArrayList<>();
+			Vector3D origin = Vector3D.ZERO;
 			
 			for (TreeNode<Element> child : element.getChildren())
 			{
-				Vector3D position = null;
-				Tile tile = null;
-				
-				for (Element childData : Node.getNodeContent(child.getChildren()))
+				if (child.getContent().getName().equalsIgnoreCase("origin"))
+					origin = GenesisDataType.valueToVector(child.getContent().getContent());
+				else
 				{
-					if (childData.getName().equalsIgnoreCase("position"))
-						position = GenesisDataType.valueToVector(childData.getContent());
-					else if (childData.getName().equalsIgnoreCase("tile"))
-						tile = VisionDataType.valueToTile(childData.getContent());
+					Vector3D position = null;
+					Tile tile = null;
+					
+					for (Element childData : Node.getNodeContent(child.getChildren()))
+					{
+						if (childData.getName().equalsIgnoreCase("position"))
+							position = GenesisDataType.valueToVector(childData.getContent());
+						else if (childData.getName().equalsIgnoreCase("tile"))
+							tile = VisionDataType.valueToTile(childData.getContent());
+					}
+					
+					// Both tile and position are required
+					if (position == null || tile == null)
+						throw new ElementValueParsingFailedException(
+								"Position and tile elements required under a tileData element");
+					
+					tiles.add(new Pair<>(position, tile));
 				}
-				
-				// Both tile and position are required
-				if (position == null || tile == null)
-					throw new ElementValueParsingFailedException(
-							"Position and tile elements required under a tileData element");
-				
-				tiles.add(new Pair<>(position, tile));
 			}
 			
-			return VisionDataType.TileMap(new TileMap(tiles));
+			return VisionDataType.TileMap(new TileMap(tiles, origin));
 		}
 		else
 			throw new ElementValueParsingFailedException("Unsupported target type " + targetType);
