@@ -14,13 +14,13 @@ public class Tile
 	private String bankName, spriteName;
 	private Vector3D size;
 	private int startFrameIndex = 0;
-	private double animationSpeed = 0.1;
+	private boolean animated = true;
 	
 	
 	// CONSTRUCTOR	--------------
 	
 	/**
-	 * Creates a new tile
+	 * Creates a new (animated) tile
 	 * @param spriteBankName The name of the bank that contains the sprite used in this tile
 	 * @param spriteName The name of the sprite used in this tile
 	 * @param size The size of the tile
@@ -38,16 +38,16 @@ public class Tile
 	 * @param spriteName The name of the sprite used in this tile
 	 * @param size The size of the tile
 	 * @param startFrameIndex The frame that is first displayed (default 0)
-	 * @param animationSpeed The animation speed used in the tile (default 0.1)
+	 * @param animated Should this tile be animated when drawn
 	 */
 	public Tile(String spriteBankName, String spriteName, Vector3D size, int startFrameIndex, 
-			double animationSpeed)
+			boolean animated)
 	{
 		this.bankName = spriteBankName;
 		this.spriteName = spriteName;
 		this.size = size;
 		this.startFrameIndex = startFrameIndex;
-		this.animationSpeed = animationSpeed;
+		this.animated = animated;
 	}
 	
 	/**
@@ -61,7 +61,7 @@ public class Tile
 		this.spriteName = other.spriteName;
 		this.size = size;
 		this.startFrameIndex = other.startFrameIndex;
-		this.animationSpeed = other.animationSpeed;
+		this.animated = other.animated;
 	}
 	
 	
@@ -92,11 +92,11 @@ public class Tile
 	}
 	
 	/**
-	 * @return The animation speed used in this tile
+	 * @return Should this tile be animated when drawn
 	 */
-	public double getAnimationSpeed()
+	public boolean isAnimated()
 	{
-		return this.animationSpeed;
+		return this.animated;
 	}
 	
 	/**

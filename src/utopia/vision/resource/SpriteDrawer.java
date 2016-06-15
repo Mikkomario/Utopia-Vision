@@ -16,7 +16,8 @@ public class SpriteDrawer
 {
 	// ATTRIBUTES	-------------------------------------------------------
 	
-	private double imageSpeed = 0.1, imageIndex = 0;
+	private boolean animationSpeedDefined = false;
+	private double animationSpeed = 0.1, frameIndex = 0;
 	private Vector3D forcedOrigin = null;
 	
 	private Sprite sprite;
@@ -32,6 +33,8 @@ public class SpriteDrawer
 	public SpriteDrawer(Sprite sprite)
 	{
 		this.sprite = sprite;
+		if (sprite != null)
+			this.animationSpeed = sprite.getDefaultAnimationSpeed();
 	}
 	
 	/**
@@ -44,6 +47,9 @@ public class SpriteDrawer
 	{
 		this.sprite = sprite;
 		this.forcedOrigin = origin;
+		
+		if (sprite != null)
+			this.animationSpeed = sprite.getDefaultAnimationSpeed();
 	}
 	
 	
@@ -65,36 +71,52 @@ public class SpriteDrawer
 	public void setSprite(Sprite sprite, boolean resetAnimation)
 	{
 		this.sprite = sprite;
+		
+		if (!this.animationSpeedDefined && sprite != null)
+			this.animationSpeed = sprite.getDefaultAnimationSpeed();
+		
 		generateAnimationEvent(EventType.SPRITE_CHANGED);
 		if (resetAnimation)
 			resetAnimation();
 	}
 	
 	/**
-	 * @return How fast the frames in the animation change (frames / step) 
-	 * (default at 0.1 = one frame in 10 steps)
+	 * @return How fast the frames in the animation change (frames / step). The default value 
+	 * depends from the sprite that is being drawn.
 	 */
 	public double getAnimationSpeed()
 	{
-		return this.imageSpeed;
+		return this.animationSpeed;
 	}
 	
 	/**
 	 * Changes how fast the frames in the animation change
-	 * @param speed The new animation speed (frames / step) (0.1 by default)
+	 * @param speed The new animation speed (frames / step)
 	 */
 	public void setAnimationSpeed(double speed)
 	{
+		this.animationSpeedDefined = true;
+		
 		// Generates animation events if necessary
 		if (speed == 0)
 		{
-			if (this.imageSpeed != 0)
+			if (this.animationSpeed != 0)
 				generateAnimationEvent(EventType.ANIMATION_SUSPENDED);
 		}
-		else if (this.imageSpeed == 0)
+		else if (this.animationSpeed == 0)
 			generateAnimationEvent(EventType.ANIMATION_RESUMED);
 			
-		this.imageSpeed = speed;
+		this.animationSpeed = speed;
+	}
+	
+	/**
+	 * Resets the animation speed back to the sprite's default
+	 */
+	public void resetAnimationSpeed()
+	{
+		this.animationSpeedDefined = false;
+		if (this.sprite != null)
+			this.animationSpeed = this.sprite.getDefaultAnimationSpeed();
 	}
 	
 	/**
@@ -116,7 +138,7 @@ public class SpriteDrawer
 	 */
 	public int getFrameIndex()
 	{
-		return (int) this.imageIndex;
+		return (int) this.frameIndex;
 	}
 	
 	/**
@@ -219,14 +241,14 @@ public class SpriteDrawer
 	/**
 	 * Updates the drawer's animation
 	 * @param steps The duration of the update
-	 * @param animationSpeed The speed at which the animation traversed (default at 0.1)
+	 * @param animationSpeed The speed at which the animation traversed (frames / step)
 	 */
 	public void animate(double steps, double animationSpeed)
 	{
 		int previousIndex = getFrameIndex();
 		
 		// Checks whether the animation cycled
-		if (setFrameIndex(this.imageIndex + animationSpeed * steps))
+		if (setFrameIndex(this.frameIndex + animationSpeed * steps))
 		{
 			if (animationSpeed > 0)
 			{
@@ -272,7 +294,7 @@ public class SpriteDrawer
 		// Generates animation events when the frame changes
 		boolean frameChanged = (int) newIndex != getFrameIndex();
 		
-		this.imageIndex = newIndex;
+		this.frameIndex = newIndex;
 		if (frameChanged)
 			generateAnimationEvent(EventType.FRAME_CHANGED);
 		

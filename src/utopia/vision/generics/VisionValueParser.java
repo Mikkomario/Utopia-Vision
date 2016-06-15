@@ -82,6 +82,7 @@ public class VisionValueParser implements ValueParser
 				model.setAttributeValue("size", GenesisDataType.Vector(sprite.getSize()));
 				model.setAttributeValue("sharpness", Value.Integer(sprite.getSharpness()));
 				model.setAttributeValue("luminosity", Value.Double((double) sprite.getLuminosity()));
+				model.setAttributeValue("animationSpeed", Value.Double(sprite.getDefaultAnimationSpeed()));
 				
 				return Value.Model(model);
 			}
@@ -95,8 +96,8 @@ public class VisionValueParser implements ValueParser
 				model.setAttributeValue("bankName", Value.String(tile.getSpriteBankName()));
 				model.setAttributeValue("spriteName", Value.String(tile.getSpriteName()));
 				model.setAttributeValue("size", GenesisDataType.Vector(tile.getSize()));
-				model.setAttributeValue("animationSpeed", Value.Double(tile.getAnimationSpeed()));
 				model.setAttributeValue("startFrameIndex", Value.Integer(tile.getStartFrameIndex()));
+				model.setAttributeValue("animated", Value.Boolean(tile.isAnimated()));
 				
 				return Value.Model(model);
 			}
@@ -114,15 +115,13 @@ public class VisionValueParser implements ValueParser
 				Vector3D origin = getVector(model, "origin", Vector3D.ZERO);
 				Vector3D size = getVector(model, "size", null);
 				int sharpness = getInteger(model, "sharpness", 0);
-				
-				float luminosity = 0;
-				if (model.containsAttribute("luminosity"))
-					luminosity = model.getAttributeValue("luminosity").toDouble().floatValue();
+				float luminosity = getDouble(model, "luminosity", 0.0).floatValue();
+				double animationSpeed = getDouble(model, "animationSpeed", 0.1);
 				
 				try
 				{
-					return VisionDataType.Sprite(new Sprite(
-							sourceFile, length, origin, size, sharpness, luminosity));
+					return VisionDataType.Sprite(new Sprite(sourceFile, length, origin, size, 
+							sharpness, luminosity, animationSpeed));
 				}
 				catch (IOException e)
 				{
@@ -139,10 +138,10 @@ public class VisionValueParser implements ValueParser
 				Vector3D size = GenesisDataType.valueToVector(model.getAttributeValue("size"));
 				
 				int startFrameIndex = getInteger(model, "startFrameIndex", 0);
-				double animationSpeed = getValue(model, "animationSpeed", Value.Double(0.1)).toDouble();
+				boolean animated = getValue(model, "animated", Value.Boolean(true)).toBoolean();
 				
 				return VisionDataType.Tile(new Tile(bankName, spriteName, size, 
-						startFrameIndex, animationSpeed));
+						startFrameIndex, animated));
 			}
 		}
 		
@@ -184,5 +183,10 @@ public class VisionValueParser implements ValueParser
 	private static Integer getInteger(Model<? extends Variable> model, String attName, Integer defaultValue)
 	{
 		return getValue(model, attName, Value.Integer(defaultValue)).toInteger();
+	}
+	
+	private static Double getDouble(Model<? extends Variable> model, String attName, Double defaultValue)
+	{
+		return getValue(model, attName, Value.Double(defaultValue)).toDouble();
 	}
 }

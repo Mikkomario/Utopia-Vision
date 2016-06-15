@@ -49,6 +49,7 @@ public class VisionElementValueParser implements ElementValueParser
 			addChildElement(root, "size", GenesisDataType.Vector(sprite.getSize()));
 			addChildElement(root, "sharpness", Value.Integer(sprite.getSharpness()));
 			addChildElement(root, "luminosity", Value.Double((double) sprite.getLuminosity()));
+			addChildElement(root, "animationSpeed", Value.Double(sprite.getDefaultAnimationSpeed()));
 			
 			return root;
 		}
@@ -60,8 +61,8 @@ public class VisionElementValueParser implements ElementValueParser
 			addChildElement(root, "bankName", Value.String(tile.getSpriteBankName()));
 			addChildElement(root, "spriteName", Value.String(tile.getSpriteName()));
 			addChildElement(root, "size", GenesisDataType.Vector(tile.getSize()));
-			addChildElement(root, "animationSpeed", Value.Double(tile.getAnimationSpeed()));
 			addChildElement(root, "startFrameIndex", Value.Integer(tile.getStartFrameIndex()));
+			addChildElement(root, "animated", Value.Boolean(tile.isAnimated()));
 			
 			return root;
 		}
@@ -97,6 +98,7 @@ public class VisionElementValueParser implements ElementValueParser
 			Vector3D size = null;
 			int sharpness = 0;
 			float luminosity = 0;
+			double animationSpeed = 0.1;
 			
 			for (Element child : Node.getNodeContent(element.getChildren()))
 			{
@@ -108,6 +110,7 @@ public class VisionElementValueParser implements ElementValueParser
 					case "size": size = GenesisDataType.valueToVector(child.getContent()); break;
 					case "sharpness": sharpness = child.getContent().toInteger(); break;
 					case "luminosity": luminosity = child.getContent().toNumber().floatValue(); break;
+					case "animationspeed": animationSpeed = child.getContent().toDouble(); break;
 				}
 			}
 			
@@ -119,7 +122,7 @@ public class VisionElementValueParser implements ElementValueParser
 			try
 			{
 				return VisionDataType.Sprite(new Sprite(new File(fileName), length, origin, size, 
-						sharpness, luminosity));
+						sharpness, luminosity, animationSpeed));
 			}
 			catch (IOException e)
 			{
@@ -131,8 +134,8 @@ public class VisionElementValueParser implements ElementValueParser
 			String bankName = null;
 			String spriteName = null;
 			Vector3D size = null;
-			double animationSpeed = 0.1;
 			int startFrameIndex = 0;
+			boolean animated = true;
 			
 			for (Element child : Node.getNodeContent(element.getChildren()))
 			{
@@ -141,8 +144,8 @@ public class VisionElementValueParser implements ElementValueParser
 					case "bankname": bankName = child.getContent().toString(); break;
 					case "spritename": spriteName = child.getContent().toString(); break;
 					case "size": size = GenesisDataType.valueToVector(child.getContent()); break;
-					case "animationspeed": animationSpeed = child.getContent().toDouble(); break;
 					case "startframeindex": startFrameIndex = child.getContent().toInteger(); break;
+					case "animated": animated = child.getContent().toBoolean(); break;
 				}
 			}
 			
@@ -152,7 +155,7 @@ public class VisionElementValueParser implements ElementValueParser
 						"Elements bankName, spriteName and size are required under a tile element");
 			
 			return VisionDataType.Tile(new Tile(bankName, spriteName, size, startFrameIndex, 
-					animationSpeed));
+					animated));
 		}
 		else if (targetType.equals(VisionDataType.TILEMAP))
 		{

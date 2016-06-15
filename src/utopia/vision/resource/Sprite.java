@@ -13,6 +13,7 @@ import java.io.IOException;
 
 import javax.imageio.ImageIO;
 
+import utopia.genesis.event.StepHandler;
 import utopia.genesis.util.Vector3D;
 
 
@@ -47,6 +48,7 @@ public class Sprite
 	private Vector3D scaling = Vector3D.IDENTITY;
 	private int sharpness = 0; // 0 = neutral, > = sharp, < = blur
 	private float luminosity = 1;
+	private double animationSpeed = 0.1;
 	
 	
 	// CONSTRUCTOR	-------------------------------------------------------
@@ -71,10 +73,12 @@ public class Sprite
 	 * @param size The sprite's in-game size. Null for original image size.
 	 * @param sharpness How much the sprite is sharpened. Use a negative value for blurring.
 	 * @param luminosity How luminous the sprite is. Default at 1.
+	 * @param defaultAnimationSpeed The default animation speed used with the sprite (frames per 
+	 * step. Default 0.1)
 	 * @throws IOException If image reading failed
 	 */
 	public Sprite(File file, int stripLength, Vector3D origin, Vector3D size, int sharpness, 
-			float luminosity) throws IOException
+			float luminosity, double defaultAnimationSpeed) throws IOException
 	{
 		loadSprite(file, stripLength, origin);
 		
@@ -82,6 +86,7 @@ public class Sprite
 			this.scaling = size.dividedBy(this.originalSize);
 		this.sharpness = sharpness;
 		this.luminosity = luminosity;
+		this.animationSpeed = defaultAnimationSpeed;
 		
 		modifyImages();
 	}
@@ -189,6 +194,15 @@ public class Sprite
 	public File getSourceFile()
 	{
 		return this.sourceFile;
+	}
+	
+	/**
+	 * @return The speed at which this sprite should be animated by default, in frames per 
+	 * step. Default is 0.1.
+	 */
+	public double getDefaultAnimationSpeed()
+	{
+		return this.animationSpeed;
 	}
 	
 	
@@ -337,6 +351,26 @@ public class Sprite
 		g2d.drawImage(sprite.getFrame(frameIndex), 0, 0, null);
 		
 		g2d.setTransform(lastTransform);
+	}
+	
+	/**
+	 * Converts a frames per second value to frames per step value
+	 * @param framesPerSecond animation speed in frames per second
+	 * @return Animation speed in frames per step
+	 */
+	public static double framesPerSecondToFramesPerStep(double framesPerSecond)
+	{
+		return StepHandler.millisToSteps(framesPerSecond * 1000);
+	}
+	
+	/**
+	 * Converts frames per step value to frames per second value
+	 * @param framesPerStep animation speed in frames per step
+	 * @return Animation speed in frames per second
+	 */
+	public static double framesPerStepToFramesPerSecond(double framesPerStep)
+	{
+		return StepHandler.stepsToMillis(framesPerStep) / 1000;
 	}
 	
 	private void modifyImages()
