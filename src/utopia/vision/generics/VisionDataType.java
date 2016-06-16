@@ -1,7 +1,13 @@
 package utopia.vision.generics;
 
+import utopia.arc.generics.ArcDataType;
+import utopia.flow.generics.BasicDataType;
 import utopia.flow.generics.DataType;
+import utopia.flow.generics.DataTypeTreeNode;
+import utopia.flow.generics.DataTypes;
 import utopia.flow.generics.Value;
+import utopia.flow.io.XmlElementReader;
+import utopia.genesis.generics.GenesisDataType;
 import utopia.vision.resource.Sprite;
 import utopia.vision.resource.Tile;
 import utopia.vision.resource.TileMap;
@@ -28,6 +34,11 @@ public enum VisionDataType implements DataType
 	 * @see TileMap
 	 */
 	TILEMAP;
+	
+	
+	// ATTRIBUTES	------------------
+	
+	private static boolean initialised = false;
 	
 	
 	// IMPLEMENTED METHODS	----------
@@ -99,5 +110,32 @@ public enum VisionDataType implements DataType
 	public static TileMap valueToTileMap(Value value)
 	{
 		return (TileMap) value.parseTo(TILEMAP);
+	}
+	
+	/**
+	 * Initialises the data types so that they can be used. This method must be called before 
+	 * the data types are used. There's no need to call {@link GenesisDataType#initialise()} or 
+	 * {@link ArcDataType#initialise()} after this method has been called.
+	 */
+	public static void initialise()
+	{
+		if (!initialised)
+		{
+			initialised = true;
+			
+			// initialises dependent types first
+			GenesisDataType.initialise();
+			ArcDataType.initialise();
+			
+			// Introduces new data types
+			DataTypeTreeNode object = DataTypes.getInstance().get(BasicDataType.OBJECT);
+			DataTypes.getInstance().add(new DataTypeTreeNode(SPRITE, object));
+			DataTypes.getInstance().add(new DataTypeTreeNode(TILE, object));
+			DataTypes.getInstance().add(new DataTypeTreeNode(TILEMAP, object));
+			
+			// Introduces new parsers as well
+			DataTypes.getInstance().addParser(VisionValueParser.getInstance());
+			XmlElementReader.introduceSpecialParser(new VisionElementValueParser());
+		}
 	}
 }

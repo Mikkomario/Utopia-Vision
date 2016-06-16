@@ -143,12 +143,15 @@ public class TileMapDrawer
 			for (Pair<Vector3D, Tile> tile : this.map.getTiles())
 			{
 				SpriteDrawer drawer = new SpriteDrawer(spriteBanks.get(
-						tile.getSecond().getSpriteBankName(), tile.getSecond().getSpriteName()), 
+						tile.getSecond().getSpriteBankName(), 
+						tile.getSecond().getSpriteName()).withSize(tile.getSecond().getSize()), 
 						getOrigin().minus(tile.getFirst()));
 				
 				drawer.setFrameIndex(tile.getSecond().getStartFrameIndex());
 				if (!tile.getSecond().isAnimated())
 					drawer.setAnimationSpeed(0);
+				
+				this.drawers.add(drawer);
 			}
 		}
 	}

@@ -105,8 +105,8 @@ public class VisionElementValueParser implements ElementValueParser
 			{
 				switch (child.getName().toLowerCase())
 				{
-					case "filename": fileName = child.getContent().toString(); break;
-					case "lenght": length = child.getContent().toInteger(); break;
+					case "file": fileName = child.getContent().toString(); break;
+					case "length": length = child.getContent().toInteger(); break;
 					case "origin": origin = GenesisDataType.valueToVector(child.getContent()); break;
 					case "size": size = GenesisDataType.valueToVector(child.getContent()); break;
 					case "sharpness": sharpness = child.getContent().toInteger(); break;
@@ -118,7 +118,7 @@ public class VisionElementValueParser implements ElementValueParser
 			// File name is required
 			if (fileName == null)
 				throw new ElementValueParsingFailedException(
-						"Element 'fileName' required unser a sprite element");
+						"Element 'file' required under a sprite element");
 			
 			try
 			{

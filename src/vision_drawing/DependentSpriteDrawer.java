@@ -10,6 +10,7 @@ import genesis_event.Handled;
 import genesis_event.HandlerRelay;
 import genesis_util.Transformable;
 import genesis_util.Vector3D;
+import utopia.vision.util.DependentSpriteObject;
 
 /**
  * This class is a dependent drawer that uses sprites / spriteDrawers in the drawing process.
@@ -18,6 +19,7 @@ import genesis_util.Vector3D;
  * @since 5.12.2014
  * @param <T> The type of object using this drawer
  * @param <SpriteDrawerType> The type of SpriteDrawer this drawer uses
+ * @deprecated Replaced with {@link DependentSpriteObject}
  */
 public class DependentSpriteDrawer<T extends Transformable & Handled, 
 		SpriteDrawerType extends SpriteDrawer> extends AbstractDependentDrawer<T>
