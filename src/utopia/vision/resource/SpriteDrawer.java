@@ -1,6 +1,10 @@
 package utopia.vision.resource;
 
 import java.awt.Graphics2D;
+import java.awt.image.BufferedImage;
+import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.List;
 
 import utopia.genesis.util.Vector3D;
 import utopia.vision.event.AnimationEvent;
@@ -21,6 +25,8 @@ public class SpriteDrawer
 	private Vector3D forcedOrigin = null;
 	
 	private Sprite sprite;
+	private LinkedList<ImageFilter> filters = new LinkedList<>();
+	private BufferedImage[] filteredFrames = null;
 	private AnimationListenerHandler listenerHandler = null;
 		
 		
@@ -32,7 +38,7 @@ public class SpriteDrawer
 	 */
 	public SpriteDrawer(Sprite sprite)
 	{
-		this.sprite = sprite;
+		setSprite(sprite, false);
 		if (sprite != null)
 			this.animationSpeed = sprite.getDefaultAnimationSpeed();
 	}
@@ -45,7 +51,7 @@ public class SpriteDrawer
 	 */
 	public SpriteDrawer(Sprite sprite, Vector3D origin)
 	{
-		this.sprite = sprite;
+		setSprite(sprite, false);
 		this.forcedOrigin = origin;
 		
 		if (sprite != null)
@@ -74,6 +80,9 @@ public class SpriteDrawer
 		
 		if (!this.animationSpeedDefined && sprite != null)
 			this.animationSpeed = sprite.getDefaultAnimationSpeed();
+		
+		// Resets all filters
+		reapplyFilters();
 		
 		generateAnimationEvent(EventType.SPRITE_CHANGED);
 		if (resetAnimation)
@@ -226,7 +235,15 @@ public class SpriteDrawer
 	 */
 	public void drawSprite(Graphics2D g2d, int frameIndex, Vector3D origin)
 	{
-		Sprite.drawSprite(getSprite(), frameIndex, origin, g2d);
+		if (getSprite() != null)
+		{
+			// May draw a filtered version of the sprite
+			if (this.filteredFrames == null)
+				Sprite.drawSprite(getSprite(), frameIndex, origin, g2d);
+			else
+				Sprite.drawImage(this.filteredFrames[getFrameIndex() % getSprite().getLength()], 
+						origin, getSprite().getScaling(), g2d);
+		}
 	}
 	
 	/**
@@ -261,6 +278,83 @@ public class SpriteDrawer
 	}
 	
 	/**
+	 * Applies a new filter to the drawer
+	 * @param filter The filter that is applied when drawing the sprite
+	 */
+	public void applyFilter(ImageFilter filter)
+	{
+		this.filters.add(filter);
+		
+		if (getSprite() != null)
+		{
+			// Creates the new image table if necessary
+			if (this.filteredFrames == null)
+			{
+				this.filteredFrames = new BufferedImage[getSprite().getLength()];
+				for (int i = 0; i < this.filteredFrames.length; i++)
+				{
+					this.filteredFrames[i] = getSprite().getFrame(i);
+				}
+			}
+			
+			// Applies the new filter
+			for (int i = 0; i < this.filteredFrames.length; i++)
+			{
+				this.filteredFrames[i] = filter.filter(this.filteredFrames[i]);
+			}
+		}
+	}
+	
+	/**
+	 * Clears all filters from this drawer
+	 */
+	public void clearFilters()
+	{
+		this.filters.clear();
+		this.filteredFrames = null;
+	}
+	
+	/**
+	 * Removes the latest filter placed on this drawer
+	 * @return The filter that was removed or null if there were no filters
+	 */
+	public ImageFilter removeLastFilter()
+	{
+		if (!this.filters.isEmpty())
+		{
+			ImageFilter removedFilter = this.filters.removeLast();
+			reapplyFilters();
+			return removedFilter;
+		}
+		else
+			return null;
+	}
+	
+	/**
+	 * Removes the provided filter from this drawer
+	 * @param filter The filter that is removed
+	 * @return Whether the drawer used the filter previously
+	 */
+	public boolean removeFilter(ImageFilter filter)
+	{
+		if (this.filters.remove(filter))
+		{
+			reapplyFilters();
+			return true;
+		}
+		else
+			return false;
+	}
+	
+	/**
+	 * @return Whether the drawer currently uses filters
+	 */
+	public boolean isFiltered()
+	{
+		return !this.filters.isEmpty();
+	}
+	
+	/**
 	 * Generates a new animation event and informs all of the animation listeners attached 
 	 * to this drawer
 	 * @param type The type of the generated event
@@ -270,6 +364,16 @@ public class SpriteDrawer
 		if (this.listenerHandler != null)
 		{
 			this.listenerHandler.onAnimationEvent(new AnimationEvent(type, this, getSprite()));
+		}
+	}
+	
+	private void reapplyFilters()
+	{
+		List<ImageFilter> filters = new ArrayList<>(this.filters);
+		clearFilters();
+		for (ImageFilter filter : filters)
+		{
+			applyFilter(filter);
 		}
 	}
 	

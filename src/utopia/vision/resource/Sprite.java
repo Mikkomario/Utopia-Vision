@@ -333,13 +333,24 @@ public class Sprite
 	 * @param g2d The graphics object that does the drawing
 	 */
 	public static void drawSprite(Sprite sprite, int frameIndex, Vector3D origin, Graphics2D g2d)
-	{
-		AffineTransform lastTransform = g2d.getTransform();
-		
+	{	
 		if (origin == null)
 			origin = sprite.getOrigin();
 		
-		Vector3D scaling = sprite.getScaling();
+		drawImage(sprite.getFrame(frameIndex), origin, sprite.getScaling(), g2d);
+	}
+	
+	/**
+	 * Draws an image
+	 * @param image the image that is drawn
+	 * @param origin The origin of the image
+	 * @param scaling The scaling applied to the image
+	 * @param g2d The graphics object used for drawing the image
+	 */
+	public static void drawImage(BufferedImage image, Vector3D origin, Vector3D scaling, 
+			Graphics2D g2d)
+	{
+		AffineTransform lastTransform = g2d.getTransform();
 		
 		// Moves the sprite according to its origin
 		g2d.translate(-origin.getX(), -origin.getY());
@@ -347,8 +358,8 @@ public class Sprite
 		// Scales the sprite according to it's status
 		g2d.scale(scaling.getX(), scaling.getY());
 		
-		// Draws the sprite
-		g2d.drawImage(sprite.getFrame(frameIndex), 0, 0, null);
+		// Draws the image
+		g2d.drawImage(image, 0, 0, null);
 		
 		g2d.setTransform(lastTransform);
 	}
