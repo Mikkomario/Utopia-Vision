@@ -22,6 +22,7 @@ import utopia.inception.util.SimpleHandled;
 import utopia.vision.event.AnimationEvent;
 import utopia.vision.event.AnimationEvent.EventType;
 import utopia.vision.event.AnimationEventListener;
+import utopia.vision.resource.SharpnessFilter;
 import utopia.vision.resource.Sprite;
 import utopia.vision.resource.SpriteDrawer;
 import utopia.vision.util.DependentSpriteObject;
@@ -54,12 +55,15 @@ class VisionSpriteTest
 			
 			// Creates the resources
 			Sprite sprite = new Sprite(new File("testData/panic_spell_strip4.png"), 4, null);
-			Sprite luminous = sprite.withLuminosity(1.6f);
+			//Sprite luminous = sprite.withLuminosity(1.6f);
 			
 			// Creates the objects
 			SimpleSpriteObject independent = new SimpleSpriteObject(sprite, resolution.dividedBy(2));
+			
+			SpriteDrawer dependentDrawer = new SpriteDrawer(sprite);
+			dependentDrawer.applyFilter(new SharpnessFilter(false));
 			DependentSpriteObject<?> dependent = new DependentSpriteObject<>(independent, 
-					new SpriteDrawer(luminous), -5);
+					dependentDrawer, 5);
 			dependent.setAlpha(0.5f);
 			dependent.transform(Transformation.scalingTransformation(1.5));
 			
