@@ -47,8 +47,6 @@ public class VisionElementValueParser implements ElementValueParser
 			addChildElement(root, "length", Value.Integer(sprite.getLength()));
 			addChildElement(root, "origin", GenesisDataType.Vector(sprite.getOrigin()));
 			addChildElement(root, "size", GenesisDataType.Vector(sprite.getSize()));
-			addChildElement(root, "sharpness", Value.Integer(sprite.getSharpness()));
-			addChildElement(root, "luminosity", Value.Double((double) sprite.getLuminosity()));
 			addChildElement(root, "animationSpeed", Value.Double(sprite.getDefaultAnimationSpeed()));
 			
 			return root;
@@ -97,8 +95,6 @@ public class VisionElementValueParser implements ElementValueParser
 			int length = 1;
 			Vector3D origin = null;
 			Vector3D size = null;
-			int sharpness = 0;
-			float luminosity = 0;
 			double animationSpeed = 0.1;
 			
 			for (Element child : Node.getNodeContent(element.getChildren()))
@@ -109,8 +105,6 @@ public class VisionElementValueParser implements ElementValueParser
 					case "length": length = child.getContent().toInteger(); break;
 					case "origin": origin = GenesisDataType.valueToVector(child.getContent()); break;
 					case "size": size = GenesisDataType.valueToVector(child.getContent()); break;
-					case "sharpness": sharpness = child.getContent().toInteger(); break;
-					case "luminosity": luminosity = child.getContent().toNumber().floatValue(); break;
 					case "animationspeed": animationSpeed = child.getContent().toDouble(); break;
 				}
 			}
@@ -123,7 +117,7 @@ public class VisionElementValueParser implements ElementValueParser
 			try
 			{
 				return VisionDataType.Sprite(new Sprite(new File(fileName), length, origin, size, 
-						sharpness, luminosity, animationSpeed));
+						animationSpeed));
 			}
 			catch (IOException e)
 			{

@@ -80,8 +80,6 @@ public class VisionValueParser implements ValueParser
 				model.setAttributeValue("length", Value.Integer(sprite.getLength()));
 				model.setAttributeValue("origin", GenesisDataType.Vector(sprite.getOrigin()));
 				model.setAttributeValue("size", GenesisDataType.Vector(sprite.getSize()));
-				model.setAttributeValue("sharpness", Value.Integer(sprite.getSharpness()));
-				model.setAttributeValue("luminosity", Value.Double((double) sprite.getLuminosity()));
 				model.setAttributeValue("animationSpeed", Value.Double(sprite.getDefaultAnimationSpeed()));
 				
 				return Value.Model(model);
@@ -114,14 +112,12 @@ public class VisionValueParser implements ValueParser
 				int length = getInteger(model, "length", 1);
 				Vector3D origin = getVector(model, "origin", Vector3D.ZERO);
 				Vector3D size = getVector(model, "size", null);
-				int sharpness = getInteger(model, "sharpness", 0);
-				float luminosity = getDouble(model, "luminosity", 0.0).floatValue();
 				double animationSpeed = getDouble(model, "animationSpeed", 0.1);
 				
 				try
 				{
 					return VisionDataType.Sprite(new Sprite(sourceFile, length, origin, size, 
-							sharpness, luminosity, animationSpeed));
+							animationSpeed));
 				}
 				catch (IOException e)
 				{

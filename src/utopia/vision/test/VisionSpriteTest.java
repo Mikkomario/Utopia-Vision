@@ -22,8 +22,7 @@ import utopia.inception.util.SimpleHandled;
 import utopia.vision.event.AnimationEvent;
 import utopia.vision.event.AnimationEvent.EventType;
 import utopia.vision.event.AnimationEventListener;
-import utopia.vision.resource.LuminosityFilter;
-import utopia.vision.resource.SharpnessFilter;
+import utopia.vision.resource.FunctionFilter;
 import utopia.vision.resource.Sprite;
 import utopia.vision.resource.SpriteDrawer;
 import utopia.vision.util.DependentSpriteObject;
@@ -62,8 +61,10 @@ class VisionSpriteTest
 			SimpleSpriteObject independent = new SimpleSpriteObject(sprite, resolution.dividedBy(2));
 			
 			SpriteDrawer dependentDrawer = new SpriteDrawer(sprite);
-			dependentDrawer.applyFilter(new LuminosityFilter(1f, 1f, 2f));
-			dependentDrawer.applyFilter(new SharpnessFilter(false));
+			//dependentDrawer.applyFilter(new LuminosityFilter(1f, 1f, 2f));
+			//dependentDrawer.applyFilter(new SharpnessFilter(false));
+			dependentDrawer.applyFilter(new FunctionFilter(new FunctionFilter.InvertFunction(), 
+					null, null));
 			DependentSpriteObject<?> dependent = new DependentSpriteObject<>(independent, 
 					dependentDrawer, 5);
 			dependent.setAlpha(0.5f);
