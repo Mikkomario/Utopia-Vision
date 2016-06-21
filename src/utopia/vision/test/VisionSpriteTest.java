@@ -1,5 +1,6 @@
 package utopia.vision.test;
 
+import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.geom.AffineTransform;
 import java.io.File;
@@ -22,6 +23,7 @@ import utopia.inception.util.SimpleHandled;
 import utopia.vision.event.AnimationEvent;
 import utopia.vision.event.AnimationEventListener;
 import utopia.vision.resource.HSBFilter;
+import utopia.vision.resource.HSBFilter.ColourTarget;
 import utopia.vision.resource.Sprite;
 import utopia.vision.resource.SpriteDrawer;
 import utopia.vision.util.DependentSpriteObject;
@@ -64,7 +66,7 @@ class VisionSpriteTest
 			//dependentDrawer.applyFilter(new SharpnessFilter(false));
 			//dependentDrawer.applyFilter(new FunctionFilter(new FunctionFilter.InvertFunction(), 
 			//		null, null));
-			dependentDrawer.applyFilter(new HSBFilter(-0.5, 0));
+			dependentDrawer.applyFilter(new HSBFilter(-0.5, 0, new ColourTarget(Color.WHITE, 400, false)));
 			DependentSpriteObject<?> dependent = new DependentSpriteObject<>(independent, 
 					dependentDrawer, 5);
 			//dependent.setAlpha(0.5f);

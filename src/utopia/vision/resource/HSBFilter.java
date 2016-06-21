@@ -16,6 +16,7 @@ public class HSBFilter implements ImageFilter
 	
 	private double hueAdjustment;
 	private double saturationAdjustment;
+	private ColourTarget target = null;
 	
 	
 	// CONSTRUCTOR	----------------
@@ -29,6 +30,19 @@ public class HSBFilter implements ImageFilter
 	{
 		this.hueAdjustment = hueAdjustment;
 		this.saturationAdjustment = saturationAdjustment;
+	}
+	
+	/**
+	 * Creates a new filter
+	 * @param hueAdjustment How much the hue is adjusted
+	 * @param saturationAdjustment How much the saturation is adjusted
+	 * @param target The colour range targeted by the filter
+	 */
+	public HSBFilter(double hueAdjustment, double saturationAdjustment, ColourTarget target)
+	{
+		this.hueAdjustment = hueAdjustment;
+		this.saturationAdjustment = saturationAdjustment;
+		this.target = target;
 	}
 	
 	
@@ -50,32 +64,43 @@ public class HSBFilter implements ImageFilter
             int blue = Colors.blue(pixel);
             int alpha = Colors.alpha(pixel);
 
-            float[] hsb = new float[3];
-            Color.RGBtoHSB(red, green, blue, hsb);
+            double effectModifier = 1;
+            if (this.target != null)
+            	effectModifier = this.target.getEffectModifier(red, green, blue);
             
-            if (this.hueAdjustment != 0)
+            if (effectModifier > 0)
             {
-            	hsb[0] += this.hueAdjustment;
-            	if (hsb[0] > 1)
-            		hsb[0] -= 1;
-            	else if (hsb[0] < 0)
-            		hsb[0] += 1;
+	            float[] hsb = new float[3];
+	            Color.RGBtoHSB(red, green, blue, hsb);
+	            
+	            
+	            if (this.hueAdjustment != 0)
+	            {
+	            	hsb[0] += this.hueAdjustment * effectModifier;
+	            	if (hsb[0] > 1)
+	            		hsb[0] -= 1;
+	            	else if (hsb[0] < 0)
+	            		hsb[0] += 1;
+	            }
+	            if (this.saturationAdjustment != 0)
+	            {
+		            hsb[1] += this.saturationAdjustment * effectModifier;
+		            if(hsb[1] > 1)
+		                hsb[1] = 1;
+		            else if(hsb[1] < 0)
+		                hsb[1] = 0;
+	            }
+	
+	            int newpixel = Color.HSBtoRGB(hsb[0], hsb[1], hsb[2]);
+	            red = Colors.red(newpixel);
+	            green = Colors.green(newpixel);
+	            blue = Colors.blue(newpixel);
+	            
+	            pixels[i] = Colors.rgba(red, green, blue, alpha);
             }
-            if (this.saturationAdjustment != 0)
-            {
-	            hsb[1] += (float)(this.saturationAdjustment);
-	            if(hsb[1] > 1)
-	                hsb[1] = 1;
-	            else if(hsb[1] < 0)
-	                hsb[1] = 0;
-            }
-
-            int newpixel = Color.HSBtoRGB(hsb[0], hsb[1], hsb[2]);
-            red = Colors.red(newpixel);
-            green = Colors.green(newpixel);
-            blue = Colors.blue(newpixel);
+            else
+            	pixels[i] = pixel;
             
-            pixels[i] = Colors.rgba(red, green, blue, alpha);
         }
 		
 		BufferedImage newImage = new BufferedImage(image.getWidth(), image.getHeight(), 
@@ -86,6 +111,73 @@ public class HSBFilter implements ImageFilter
 
 	
 	// NESTED CLASSES	-------------
+	
+	/**
+	 * Colour targets are used when targeting certain colour ranges
+	 * @author Mikko Hilpinen
+	 * @since 21.6.2016
+	 */
+	public static class ColourTarget
+	{
+		// ATTRIBUTES	-------------
+		
+		private int red, green, blue, range;
+		private boolean inclusive;
+		
+		
+		// CONSTRUCTOR	-------------
+		
+		/**
+		 * Creates a new colour target
+		 * @param colour The targeted colour
+		 * @param range The included range
+		 * @param inclusive Should the colour be included (true) or excluded (false). 
+		 * If excluded, all other colours will be targeted.
+		 */
+		public ColourTarget(Color colour, int range, boolean inclusive)
+		{
+			this.red = colour.getRed();
+			this.green = colour.getGreen();
+			this.blue = colour.getBlue();
+			this.range = range;
+			this.inclusive = inclusive;
+		}
+		
+		
+		// OTHER METHODS	----------
+		
+		/**
+		 * Calculates the effect strength that should be applied to a colour. If inclusive, 
+		 * full effect will be applied to the targeted colour. If exclusive, full effect will 
+		 * be applied to colour outside the targeted range.
+		 * @param red The red component of a colour
+		 * @param green The green component of a colour
+		 * @param blue The blue component of a colour
+		 * @return The effect modifier for that colour [0, 1]
+		 */
+		public double getEffectModifier(int red, int green, int blue)
+		{
+			// The effect is stronger the closer the colour is
+			int difference = getDifference(red, green, blue);
+			if (difference > this.range)
+				return 0;
+			
+			// Uses a sin function for the effectiveness
+			// (sin(2 * (x * 1.6) - 1.6)  + 1) / 2
+			double x = difference / (double) this.range;
+			double modifier = 0.5 * (Math.sin(x * Math.PI - Math.PI / 2) + 1);
+			if (this.inclusive)
+				modifier = 1 - modifier;
+			
+			return modifier;
+		}
+		
+		private int getDifference(int red, int green, int blue)
+		{
+			return Math.abs(this.red - red) + Math.abs(this.green - green) + 
+					Math.abs(this.blue - blue);
+		}
+	}
 	
 	/**
 	 * @author Ryan
