@@ -166,8 +166,6 @@ public class FunctionFilter implements ImageFilter
 			double y = Math.cbrt(x);
 			double range = 255 / 2.0;
 			
-			System.out.println(x + " -> " + y);
-			
 			return (short) (range + range * y);
 		}
 	}

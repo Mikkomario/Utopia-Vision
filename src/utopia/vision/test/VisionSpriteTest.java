@@ -20,9 +20,8 @@ import utopia.inception.event.StrictEventSelector;
 import utopia.inception.handling.HandlerRelay;
 import utopia.inception.util.SimpleHandled;
 import utopia.vision.event.AnimationEvent;
-import utopia.vision.event.AnimationEvent.EventType;
 import utopia.vision.event.AnimationEventListener;
-import utopia.vision.resource.FunctionFilter;
+import utopia.vision.resource.HSBFilter;
 import utopia.vision.resource.Sprite;
 import utopia.vision.resource.SpriteDrawer;
 import utopia.vision.util.DependentSpriteObject;
@@ -63,11 +62,12 @@ class VisionSpriteTest
 			SpriteDrawer dependentDrawer = new SpriteDrawer(sprite);
 			//dependentDrawer.applyFilter(new LuminosityFilter(1f, 1f, 2f));
 			//dependentDrawer.applyFilter(new SharpnessFilter(false));
-			dependentDrawer.applyFilter(new FunctionFilter(new FunctionFilter.InvertFunction(), 
-					null, null));
+			//dependentDrawer.applyFilter(new FunctionFilter(new FunctionFilter.InvertFunction(), 
+			//		null, null));
+			dependentDrawer.applyFilter(new HSBFilter(-0.5, 0));
 			DependentSpriteObject<?> dependent = new DependentSpriteObject<>(independent, 
 					dependentDrawer, 5);
-			dependent.setAlpha(0.5f);
+			//dependent.setAlpha(0.5f);
 			dependent.transform(Transformation.scalingTransformation(1.5));
 			
 			handlers.add(independent, dependent);
@@ -93,7 +93,7 @@ class VisionSpriteTest
 		private Transformation transformation;
 		private SpriteDrawer drawer;
 		private EventSelector<AnimationEvent> selector = new StrictEventSelector<>();
-		private Sprite originalSprite, reversedSprite;
+		//private Sprite originalSprite, reversedSprite;
 		private double phase = 0;
 		
 		
@@ -103,9 +103,9 @@ class VisionSpriteTest
 		{
 			this.transformation = new Transformation(position);
 			this.drawer = new SpriteDrawer(sprite);
-			this.drawer.setAnimationDuration(StepHandler.millisToSteps(1000));
-			this.originalSprite = sprite;
-			this.reversedSprite = sprite.reverse();
+			//this.drawer.setAnimationDuration(StepHandler.millisToSteps(1000));
+			//this.originalSprite = sprite;
+			//this.reversedSprite = sprite.reverse();
 			
 			this.drawer.getAnimationListenerHandler().add(this);
 		}
@@ -118,7 +118,7 @@ class VisionSpriteTest
 		{
 			this.drawer.animate(duration);
 			
-			this.phase = (this.phase + duration * 0.01) % 1;
+			this.phase = (this.phase + duration * 0.001) % 1;
 			setTrasformation(getTransformation().withScaling(0.5 + Math.sin(this.phase * Math.PI)));
 		}
 
@@ -168,14 +168,17 @@ class VisionSpriteTest
 		public void onAnimationEvent(AnimationEvent event)
 		{
 			System.out.println(event.getType());
+			/*
 			if (event.getType() == EventType.ANIMATION_COMPLETED)
 			{
+				// TODO: Reversing looks wonky
 				if (this.drawer.getSprite() == this.originalSprite)
 					this.drawer.setSprite(this.reversedSprite, false);
 				else
 					this.drawer.setSprite(this.originalSprite, false);
 				this.drawer.setFrameIndex(1);
 			}
+			*/
 		}
 	}
 }
