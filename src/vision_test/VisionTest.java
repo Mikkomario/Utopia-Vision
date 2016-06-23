@@ -36,6 +36,7 @@ import vision_sprite.SpriteBank;
  * 
  * @author Mikko Hilpinen
  * @since 7.12.2014
+ * @deprecated Tests deprecated components
  */
 public class VisionTest
 {

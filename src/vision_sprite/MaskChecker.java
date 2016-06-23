@@ -12,6 +12,7 @@ import java.util.List;
  *
  * @author Mikko Hilpinen.
  * @since 2.7.2013.
+ * @deprecated Replaced with {@link utopia.vision.util.MaskChecker}
  */
 public class MaskChecker
 {

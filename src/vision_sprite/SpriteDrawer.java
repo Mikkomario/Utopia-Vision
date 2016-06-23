@@ -5,7 +5,6 @@ import genesis_event.Handled;
 import genesis_event.HandlerRelay;
 import genesis_util.ConnectedHandled;
 import genesis_util.Vector3D;
-import utopia.vision.event.AnimationListenerHandler;
 
 import java.awt.Graphics2D;
 import java.awt.geom.AffineTransform;

@@ -8,7 +8,7 @@ import genesis_event.HandlerRelay;
  * 
  * @author Mikko Hilpinen. 
  * @since 16.1.2014
- * @deprecated Replaced with {@link utopia.vision.resource.SingleSpriteDrawer}
+ * @deprecated Replaced with {@link utopia.vision.resource.SpriteDrawer}
  */
 public class SingleSpriteDrawer extends SpriteDrawer
 {

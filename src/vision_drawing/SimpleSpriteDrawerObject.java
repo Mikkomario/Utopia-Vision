@@ -8,6 +8,7 @@ import genesis_event.HandlerRelay;
 import genesis_util.SimpleHandled;
 import genesis_util.Transformable;
 import genesis_util.Transformation;
+import utopia.vision.util.SimpleSpriteObject;
 
 /**
  * SimpleSpriteDrawerObjects can be transformed. They draw themselves using spriteDrawers.
@@ -15,6 +16,7 @@ import genesis_util.Transformation;
  * @author Mikko Hilpinen
  * @param <SpriteDrawerType> The type of spriteDrawer used by this object
  * @since 6.12.2014
+ * @deprecated Replaced with {@link SimpleSpriteObject}
  */
 public class SimpleSpriteDrawerObject<SpriteDrawerType extends SpriteDrawer> extends 
 		SimpleHandled implements Transformable

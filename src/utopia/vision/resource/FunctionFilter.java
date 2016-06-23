@@ -169,4 +169,30 @@ public class FunctionFilter implements ImageFilter
 			return (short) (range + range * y);
 		}
 	}
+	
+	/*
+	public static class TresholdFunction implements Function
+	{
+		// ATTRIBUTES	---------------
+		
+		private int tresholds;
+		
+		
+		// CONSTRUCTOR	---------------
+		
+		public TresholdFunction(int colourAmount)
+		{
+			this.tresholds = colourAmount - 1;
+		}
+		
+		
+		// IMPLEMENTED METHODS	------
+		
+		@Override
+		public short getValue(short i)
+		{
+			int index = i / (255 / this.tresholds);
+			return 0;
+		}
+	}*/
 }
