@@ -9,7 +9,6 @@ import java.io.IOException;
 
 import javax.imageio.ImageIO;
 
-import utopia.genesis.event.StepHandler;
 import utopia.genesis.util.Vector3D;
 
 
@@ -161,14 +160,6 @@ public class Sprite
 		return this.animationSpeed;
 	}
 	
-	/**
-	 * @return The speed at which this sprite should be animated by default. In frames per step.
-	 */
-	public double getDefaultAnimationSpeedPerStep()
-	{
-		return framesPerSecondToFramesPerStep(getDefaultAnimationSpeed());
-	}
-	
 	
 	// OTHER METHODS	------------------------------------------------------------
 	
@@ -278,54 +269,4 @@ public class Sprite
 		
 		g2d.setTransform(lastTransform);
 	}
-	
-	/**
-	 * Converts a frames per second value to frames per step value
-	 * @param framesPerSecond animation speed in frames per second
-	 * @return Animation speed in frames per step
-	 */
-	public static double framesPerSecondToFramesPerStep(double framesPerSecond)
-	{
-		return framesPerSecond * StepHandler.STEPLENGTH / 1000;
-	}
-	
-	/**
-	 * Converts frames per step value to frames per second value
-	 * @param framesPerStep animation speed in frames per step
-	 * @return Animation speed in frames per second
-	 */
-	public static double framesPerStepToFramesPerSecond(double framesPerStep)
-	{
-		return framesPerStep * 1000 / StepHandler.STEPLENGTH;
-	}
-	
-	// TODO: If you get bored, try to implement filters into the project
-	// check: http://docs.oracle.com/javase/tutorial/2d/images/drawimage.html
-	
-	/* ConvolveOP (http://www.informit.com/articles/article.aspx?p=1013851&seqNum=5)
-	*/
-	/*
-	 * protected LookupOp createColorizeOp(short R1, short G1, short B1) {
-    short[] alpha = new short[256];
-    short[] red = new short[256];
-    short[] green = new short[256];
-    short[] blue = new short[256];
-
-    int Y = 0.3*R + 0.59*G + 0.11*B
-
-    for (short i = 0; i < 256; i++) {
-        alpha[i] = i;
-        red[i] = (R1 + i*.3)/2;
-        green[i] = (G1 + i*.59)/2;
-        blue[i] = (B1 + i*.11)/2;
-    }
-
-    short[][] data = new short[][] {
-            red, green, blue, alpha
-    };
-
-    LookupTable lookupTable = new ShortLookupTable(0, data);
-    return new LookupOp(lookupTable, null);
-}
-	 */
 }

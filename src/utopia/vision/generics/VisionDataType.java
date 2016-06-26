@@ -6,7 +6,6 @@ import utopia.flow.generics.DataType;
 import utopia.flow.generics.DataTypeTreeNode;
 import utopia.flow.generics.DataTypes;
 import utopia.flow.generics.Value;
-import utopia.flow.io.XmlElementReader;
 import utopia.genesis.generics.GenesisDataType;
 import utopia.vision.resource.Sprite;
 import utopia.vision.resource.Tile;
@@ -135,7 +134,7 @@ public enum VisionDataType implements DataType
 			
 			// Introduces new parsers as well
 			DataTypes.getInstance().addParser(VisionValueParser.getInstance());
-			XmlElementReader.introduceSpecialParser(new VisionElementValueParser());
+			DataTypes.getInstance().introduceSpecialParser(new VisionElementValueParser());
 		}
 	}
 }

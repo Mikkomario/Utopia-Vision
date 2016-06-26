@@ -60,7 +60,7 @@ class VisionSpriteTest
 			handlers.addHandler(stepHandler, panel.getDrawer(), mouseHandler);
 			
 			// Creates the resources
-			Sprite sprite = new Sprite(new File("testData/panic_spell_strip4.png"), 4, null);
+			Sprite sprite = new Sprite(new File("testData/panic_spell_strip4.png"), 4, null, null, 8);
 			//Sprite luminous = sprite.withLuminosity(1.6f);
 			
 			// Creates the objects
@@ -128,7 +128,7 @@ class VisionSpriteTest
 		{
 			this.drawer.animate(duration);
 			
-			this.phase = (this.phase + duration * 0.001) % 1;
+			this.phase = (this.phase + duration * 0.0001) % 1;
 			setTrasformation(getTransformation().withScaling(0.5 + Math.sin(this.phase * Math.PI)));
 		}
 

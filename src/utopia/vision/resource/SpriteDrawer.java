@@ -6,7 +6,6 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
-import utopia.genesis.event.StepHandler;
 import utopia.genesis.util.Vector3D;
 import utopia.vision.event.AnimationEvent;
 import utopia.vision.event.AnimationEvent.EventType;
@@ -101,14 +100,6 @@ public class SpriteDrawer
 	}
 	
 	/**
-	 * @return The drawer's current animation speed in frames per step
-	 */
-	public double getAnimationSpeedPerStep()
-	{
-		return Sprite.framesPerSecondToFramesPerStep(getAnimationSpeed());
-	}
-	
-	/**
 	 * Changes how fast the frames in the animation change
 	 * @param framesPerSecond The new animation speed (frames / second)
 	 */
@@ -150,16 +141,6 @@ public class SpriteDrawer
 			setAnimationSpeed(0);
 		else
 			setAnimationSpeed(getSprite().getLength() / (millis / 1000));
-	}
-	
-	/**
-	 * Changes the animation speed so that a single animation cycle will last 
-	 * <b>duration</b> steps
-	 * @param steps How many steps will a single animation cycle last
-	 */
-	public void setAnimationDurationInSteps(double steps)
-	{
-		setAnimationDuration(StepHandler.stepsToMillis(steps));
 	}
 	
 	/**
@@ -277,18 +258,17 @@ public class SpriteDrawer
 	
 	/**
 	 * Updates the drawer's animation
-	 * @param steps The duration of the update
+	 * @param durationMillis The duration of the update in milliseconds
 	 * @param framesPerSecond The speed at which the animation traversed (frames / second)
 	 */
-	public void animate(double steps, double framesPerSecond)
+	public void animate(double durationMillis, double framesPerSecond)
 	{
 		int previousIndex = getFrameIndex();
-		double framesPerStep = Sprite.framesPerSecondToFramesPerStep(framesPerSecond);
 		
 		// Checks whether the animation cycled
-		if (setFrameIndex(this.frameIndex + framesPerStep * steps))
+		if (setFrameIndex(this.frameIndex +  durationMillis * framesPerSecond / 1000))
 		{
-			if (framesPerStep > 0)
+			if (framesPerSecond > 0)
 			{
 				if (getFrameIndex() < previousIndex)
 					generateAnimationEvent(EventType.ANIMATION_COMPLETED);
