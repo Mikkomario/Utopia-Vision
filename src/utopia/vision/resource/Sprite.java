@@ -23,12 +23,17 @@ public class Sprite
 {	
 	// ATTRIBUTES	-------------------------------------------------------
 	
+	/**
+	 * The default animation speed used. In frames per second.
+	 */
+	public static final double DEFAULT_ANIMATION_SPEED_PER_SECOND = 15;
+	
 	private BufferedImage[] images;
 	private Vector3D origin, originalSize;
 	private File sourceFile;
 	
 	private Vector3D scaling = Vector3D.IDENTITY;
-	private double animationSpeed = 0.1;
+	private double animationSpeed = DEFAULT_ANIMATION_SPEED_PER_SECOND;
 	
 	
 	// CONSTRUCTOR	-------------------------------------------------------
@@ -52,7 +57,7 @@ public class Sprite
 	 * @param origin The sprite's origin's coordinates (relative). Use null for centered origin.
 	 * @param size The sprite's in-game size. Null for original image size.
 	 * @param defaultAnimationSpeed The default animation speed used with the sprite (frames per 
-	 * step. Default 0.1)
+	 * second. Default 15)
 	 * @throws IOException If image reading failed
 	 */
 	public Sprite(File file, int stripLength, Vector3D origin, Vector3D size, 
@@ -149,11 +154,19 @@ public class Sprite
 	
 	/**
 	 * @return The speed at which this sprite should be animated by default, in frames per 
-	 * step. Default is 0.1.
+	 * second. Default is 15.
 	 */
 	public double getDefaultAnimationSpeed()
 	{
 		return this.animationSpeed;
+	}
+	
+	/**
+	 * @return The speed at which this sprite should be animated by default. In frames per step.
+	 */
+	public double getDefaultAnimationSpeedPerStep()
+	{
+		return framesPerSecondToFramesPerStep(getDefaultAnimationSpeed());
 	}
 	
 	
@@ -273,7 +286,7 @@ public class Sprite
 	 */
 	public static double framesPerSecondToFramesPerStep(double framesPerSecond)
 	{
-		return StepHandler.millisToSteps(framesPerSecond * 1000);
+		return framesPerSecond * StepHandler.STEPLENGTH / 1000;
 	}
 	
 	/**
@@ -283,7 +296,7 @@ public class Sprite
 	 */
 	public static double framesPerStepToFramesPerSecond(double framesPerStep)
 	{
-		return StepHandler.stepsToMillis(framesPerStep) / 1000;
+		return framesPerStep * 1000 / StepHandler.STEPLENGTH;
 	}
 	
 	// TODO: If you get bored, try to implement filters into the project

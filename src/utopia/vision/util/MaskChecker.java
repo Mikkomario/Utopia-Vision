@@ -111,7 +111,7 @@ public class MaskChecker
 		Vector3D inSpritePosition = position.plus(origin);
 		
 		// The position must be inside the sprite
-		if (!HelpMath.pointIsInRange(position, Vector3D.ZERO, sprite.getSize()))
+		if (!HelpMath.pointIsInRange(inSpritePosition, Vector3D.ZERO, sprite.getSize()))
 			return RGBAColours.rgba(0, 0, 0, 0);
 		
 		// Subtracts the scaling as well

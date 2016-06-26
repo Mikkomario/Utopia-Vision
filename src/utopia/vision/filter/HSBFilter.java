@@ -1,4 +1,4 @@
-package utopia.vision.resource;
+package utopia.vision.filter;
 
 import java.awt.Color;
 import java.awt.image.BufferedImage;

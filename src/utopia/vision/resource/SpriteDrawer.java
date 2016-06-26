@@ -6,9 +6,11 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
+import utopia.genesis.event.StepHandler;
 import utopia.genesis.util.Vector3D;
 import utopia.vision.event.AnimationEvent;
 import utopia.vision.event.AnimationEvent.EventType;
+import utopia.vision.filter.ImageFilter;
 import utopia.vision.event.AnimationListenerHandler;
 
 /**
@@ -21,7 +23,7 @@ public class SpriteDrawer
 	// ATTRIBUTES	-------------------------------------------------------
 	
 	private boolean animationSpeedDefined = false;
-	private double animationSpeed = 0.1, frameIndex = 0;
+	private double animationSpeed = Sprite.DEFAULT_ANIMATION_SPEED_PER_SECOND, frameIndex = 0;
 	private Vector3D forcedOrigin = null;
 	
 	private Sprite sprite;
@@ -90,7 +92,7 @@ public class SpriteDrawer
 	}
 	
 	/**
-	 * @return How fast the frames in the animation change (frames / step). The default value 
+	 * @return How fast the frames in the animation change (frames / second). The default value 
 	 * depends from the sprite that is being drawn.
 	 */
 	public double getAnimationSpeed()
@@ -99,15 +101,23 @@ public class SpriteDrawer
 	}
 	
 	/**
-	 * Changes how fast the frames in the animation change
-	 * @param speed The new animation speed (frames / step)
+	 * @return The drawer's current animation speed in frames per step
 	 */
-	public void setAnimationSpeed(double speed)
+	public double getAnimationSpeedPerStep()
+	{
+		return Sprite.framesPerSecondToFramesPerStep(getAnimationSpeed());
+	}
+	
+	/**
+	 * Changes how fast the frames in the animation change
+	 * @param framesPerSecond The new animation speed (frames / second)
+	 */
+	public void setAnimationSpeed(double framesPerSecond)
 	{
 		this.animationSpeedDefined = true;
 		
 		// Generates animation events if necessary
-		if (speed == 0)
+		if (framesPerSecond == 0)
 		{
 			if (this.animationSpeed != 0)
 				generateAnimationEvent(EventType.ANIMATION_SUSPENDED);
@@ -115,7 +125,7 @@ public class SpriteDrawer
 		else if (this.animationSpeed == 0)
 			generateAnimationEvent(EventType.ANIMATION_RESUMED);
 			
-		this.animationSpeed = speed;
+		this.animationSpeed = framesPerSecond;
 	}
 	
 	/**
@@ -129,17 +139,27 @@ public class SpriteDrawer
 	}
 	
 	/**
-	 * Changes the image speed so that a single animation cycle will last 
-	 * <b>duration</b> steps
-	 * @param duration How many steps will a single animation cycle last
+	 * Changes the animation speed so that a single animation cycle will last 
+	 * <b>duration</b> milliseconds
+	 * @param millis How many milliseconds will a single animation cycle last
 	 */
-	public void setAnimationDuration(double duration)
+	public void setAnimationDuration(double millis)
 	{
 		// Checks the argument
-		if (duration == 0)
+		if (millis == 0)
 			setAnimationSpeed(0);
 		else
-			setAnimationSpeed(getSprite().getLength() / duration);
+			setAnimationSpeed(getSprite().getLength() / (millis / 1000));
+	}
+	
+	/**
+	 * Changes the animation speed so that a single animation cycle will last 
+	 * <b>duration</b> steps
+	 * @param steps How many steps will a single animation cycle last
+	 */
+	public void setAnimationDurationInSteps(double steps)
+	{
+		setAnimationDuration(StepHandler.stepsToMillis(steps));
 	}
 	
 	/**
@@ -258,16 +278,17 @@ public class SpriteDrawer
 	/**
 	 * Updates the drawer's animation
 	 * @param steps The duration of the update
-	 * @param animationSpeed The speed at which the animation traversed (frames / step)
+	 * @param framesPerSecond The speed at which the animation traversed (frames / second)
 	 */
-	public void animate(double steps, double animationSpeed)
+	public void animate(double steps, double framesPerSecond)
 	{
 		int previousIndex = getFrameIndex();
+		double framesPerStep = Sprite.framesPerSecondToFramesPerStep(framesPerSecond);
 		
 		// Checks whether the animation cycled
-		if (setFrameIndex(this.frameIndex + animationSpeed * steps))
+		if (setFrameIndex(this.frameIndex + framesPerStep * steps))
 		{
-			if (animationSpeed > 0)
+			if (framesPerStep > 0)
 			{
 				if (getFrameIndex() < previousIndex)
 					generateAnimationEvent(EventType.ANIMATION_COMPLETED);

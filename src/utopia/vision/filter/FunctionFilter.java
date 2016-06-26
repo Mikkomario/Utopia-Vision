@@ -1,4 +1,4 @@
-package utopia.vision.resource;
+package utopia.vision.filter;
 
 import java.awt.image.BufferedImage;
 import java.awt.image.LookupOp;
@@ -170,19 +170,31 @@ public class FunctionFilter implements ImageFilter
 		}
 	}
 	
-	/*
+	/**
+	 * This function limits values to certain tresholds
+	 * @author Mikko Hilpinen
+	 * @since 26.6.2016
+	 */
 	public static class TresholdFunction implements Function
 	{
 		// ATTRIBUTES	---------------
 		
-		private int tresholds;
+		private short[] tresholds;
 		
 		
 		// CONSTRUCTOR	---------------
 		
+		/**
+		 * Creates a new function
+		 * @param colourAmount The amount of different colours (tresholds) to be used
+		 */
 		public TresholdFunction(int colourAmount)
 		{
-			this.tresholds = colourAmount - 1;
+			this.tresholds = new short[colourAmount];
+			for (short i = 0; i < colourAmount; i++)
+			{
+				this.tresholds[i] = (short) (i * 255 / (colourAmount - 1));
+			}
 		}
 		
 		
@@ -191,8 +203,8 @@ public class FunctionFilter implements ImageFilter
 		@Override
 		public short getValue(short i)
 		{
-			int index = i / (255 / this.tresholds);
-			return 0;
+			int index = i * this.tresholds.length / 256;
+			return this.tresholds[index];
 		}
-	}*/
+	}
 }
